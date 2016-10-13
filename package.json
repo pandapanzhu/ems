@@ -1,0 +1,29 @@
+{
+  "name": "ems",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "*",
+    "express": "3.2.2",
+    "mongoose": "^4.6.3"
+  },
+  "description": "my ems",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pandapanzhu/ems.git"
+  },
+  "keywords": [
+    "ems"
+  ],
+  "author": "panzhu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pandapanzhu/ems/issues"
+  },
+  "homepage": "https://github.com/pandapanzhu/ems#readme"
+}
