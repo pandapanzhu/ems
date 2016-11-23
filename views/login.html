@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>欢迎登录教务管理系统</title>
+
+	   <!-- Bootstrap Core CSS -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+	
+	<style type="text/css">
+		.leftLabel {
+            text-align: right;
+            line-height: 34px;
+        }
+
+        .loginTitle {
+            font-size: 28px;
+            font-family: "Microsoft YaHei";
+            text-align: center;
+            margin: 10px;
+        }
+
+        .panel-default > .panel-heading {
+            background-color: #47A3DA;
+        }
+
+        .login-panel {
+            margin-top: 20%;
+			
+        }
+		.btn-theme{
+		background:#47A3DA;
+		font-weight:700 !important;
+		color:#fff;
+		}
+	</style>
+
+</head>
+<body >
+
+<div class="container" >
+	<div class="row">
+	 <div class="col-md-6 col-md-offset-3">
+		<div class="login-panel panel panel-default">
+			<div class="panel-heading" >
+				<h3 class="panel-title loginTitle" >成都大学教务管理系统</h3>
+			</div>
+		<div class="panel-body">
+			<form action="loginForm" method="post" class="form-horizontal">
+				<div class="form-group">
+					<label class="col-md-3 leftLabel">用户名:</label>
+					<div class="col-md-8">
+						<input type="text" class="form-control" placeholder="Username"  name="username" id="username" autofocus >
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 leftLabel">密码:</label>
+					<div class="col-md-8">
+						<input type="password" class="form-control" placeholder="Password"  name="password" id="password" autofocus >
+					</div>
+				</div>
+				<!--登录角色选择 -->
+				<div class="form-group">
+					<label class="col-md-3"></label>
+					<div class="col-md-8">
+						<input type="radio" name="role" value="admin" checked="checked"> 管理员&nbsp;
+						<input type="radio" name="role" value="student" > 学生&nbsp;
+						<input type="radio" name="role" value="teacher"> 教师&nbsp;
+					</div>
+				<!-- 错误信息提示-->
+				<div class="form-group">
+					<label class="col-md-3"></label>
+					<div class="col-md-8">
+						<% if(title) {%>
+					<div> <%=title %> </div>
+						<% }%>
+				</div>
+				
+				</div>
+				<div class="form-group">
+					<label class="col-md-3 leftLabel"></label>
+					<div class="col-md-8">
+						<span style="margin-left:80px;">
+						<input type="submit" class="btn btn-theme" id="submit" value="登录" ></span>
+					</div>
+				</div>
+
+			</form>
+		</div>
+	</div>
+	</div>
+</div>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript">
+
+$(function(){
+
+	$("#username").blur(function(){
+		const username=$("#username").val();
+		if(username.length<5){
+			parent.layer.msg("用户名太短了");
+		}else if(username.length>20){
+			parent.layer.msg("用户名太长了");
+		}
+		
+	});
+})
+	
+
+
+
+</script>
+
+</body>
+</html>
