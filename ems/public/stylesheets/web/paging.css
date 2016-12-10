@@ -1,0 +1,9 @@
+/*分页标签的样式！*/
+@CHARSET "UTF-8";
+.bottom{width: 100% ;height:50px;}
+.bottom .selectbtn{width:20%;height: 50px;line-height: 50px;float: left;font-size: 14px;}
+.bottom .page{width:80%;height: 50px;line-height: 50px;float: left;}
+.bottom .page ul{float: right}
+.bottom .page ul li{float:left;font-size: 14px;padding-left: 10px;}
+.bottom .page ul li button{height: 25px;line-height: 25px;color:#fff;min-width: 20px;background: #D6E4E1;border-radius:5px;}
+.bottom .page ul li button:hover {background: #5AB4F5}

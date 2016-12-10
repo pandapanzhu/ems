@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+<!--<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">-->
+<style type="text/css">
+.btn-theme{
+	background:#5AB4F5;
+	font-weight:700 !important;
+	color:#fff;
+}
+.btn-theme-cancel{
+	background:#D9534F;
+	font-weight:700 !important;
+	color:#fff;
+}
+input[type="text"]{
+	width:90%;
+	min-width:120px;
+}
+.tdwidth{
+	min-width:100px;
+	max-width:150px;
+}
+.imgs{
+	width:150px;
+	height:80%;
+}
+</style>
+</head>
+
+<body>
+<div align="center" style=" margin-left:2%; margin-right:2%;">
+<form action="doAddTeacher" method="post" enctype="multipart/form-data">
+<table class="table table-bordered">
+
+<tr >
+	<td class="tdwidth" style="width:110px;">职工号：</td>
+	<td ><input type="text" name="teacherId" ></td>
+	<td class="tdwidth" style="width:110px;">身份证号：</td>
+	<td><input type="text" name="IdCard"></ins></td>
+	<td class="tdwidth" style="width:150px;">电话号码：</td>
+	<td><input type="text" name="phoneNo"></td>
+	<!--职工照片-->
+	<td rowspan="5" style="width:180px;"  align="center" valign="middle">
+		<img src="/images/default_head.jpg"  class="imgs"><br>
+		<span>请添加照片！</span>
+	</td>
+<tr>
+	<td>姓名：</td>
+	<td><input type="text" name="name"></ins></td>
+	<td>曾用名：</td>
+	<td><input type="text" name="usedname"></td>
+	<td>性别</td>
+	<td><input type="radio" name="gender" value="男" checked="checked" />男
+		 <input type="radio" name="gender" value="女"/>女
+	</td>
+</tr>
+
+<tr >
+	<td >出生年月：</td>
+	<td id="selectBir">
+		<select id="year" style="width:37%;"></select>
+		<select id="month" style="width:24%;"></select>
+		<select id="day" style="width:24%;"></select>
+	</td>
+	<td>民族：</td>
+	<td><input type="text" name="national"></td>
+	<td>政治面貌：</td>
+	<td><input type="text" name="politicalLandscape"></td>
+</tr>
+
+<tr >
+	<td>邮箱：</td>
+	<td><input type="text" name="e_mail"></td>
+	<td>学历：</td>
+	<td><input type="text" name="education">
+	<td>学位：</td>
+	<td><input type="text" name="degree">
+</tr>
+
+<tr >
+	<td>毕业院校：</td>
+	<td><input type="text" name="originSchool"></td>
+	<td >职务：</td>
+	<td ><input type="text" name="office"></td>
+	<td>职称：</td>
+	<td><input type="text" name="title"></td>
+</tr>
+
+<tr >
+	<td >所属学院：</td>
+	<td ><input type="text" name="faculty"></td>
+	<td>学科方向：</td>
+	<td><input type="text" name="direction"></td>
+	<td>主修方向：</td>
+	<td><input type="text" name="major"></td>
+	<!--上传图片按钮-->
+	<td ><input type="file"  name="teacherphoto" multiple="multiple" style="width:100%;"></td>
+</tr>
+
+
+<tr >
+	<td >教师资格证：</td>
+	<td ><input type="text" name="teacherNo"></td>
+	<td>人事职工号：</td>
+	<td><input type="text" name="employeeNo"></td>
+	<td>是否是实验室人员：</td>
+	<td><select name="labMan" id="selectLab" style="width:90%;">
+			<option value="true">是</option>
+			<option value="flase">否</option>
+		</select>
+	</td>
+</tr>
+</table>
+
+<input type="submit" class="btn btn-theme" value="提交" id="submit" >
+<input type="button" class="btn btn-theme-cancel" value="返回" id="back">
+
+</form>
+</div>
+
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/javascripts/web/date.js"></script>
+
+
+<script type="text/javascript">
+
+addBirthday();
+function addBirthday(){
+
+	var years='';
+	var months='';
+	var days='';
+
+	var date=new Date();
+	var year=date.getFullYear();
+	var month=date.getMonth()+1;
+	var day=date.getDate();
+		console.log(year+''+month+''+day);
+
+
+	for(var i=1900;i<=2150;i++){
+		if(i==year){
+			years+='<option  value='+i+' selected>'+i+'</option>'
+		}else{
+			years+='<option  value='+i+'>'+i+'</option>'
+		}
+	}//end for of year
+	$("#year").empty().append(years);
+	
+	for(var i=1;i<=12;i++){
+		if(i==month){
+			months+='<option  value='+i+' selected>'+i+'</option>'
+		}else{
+			months+='<option  value='+i+'>'+i+'</option>'
+		}
+	}//end for of month
+	$("#month").empty().append(months);
+	//日期因为有28日，29日，30日，31日之分，所以写在公用方法里面，方便调用
+	//设置时间的方法，减少代码重用
+	setDays(year,month,day);
+
+}//end function
+
+//当界面时间出现了改变后
+function selectChange(){
+ var year =$("#year").val();
+ var month=$("#month").val();
+ var day=$("#day").val();
+ console.log(year+','+month+','+day);
+ setDays(year,month,day);
+}
+
+
+
+
+$(function(){
+	$("#back").click(function(){
+				location.href='/admin_teacher/getTeacher';
+	});
+
+	$("#year").change(function(){
+		 selectChange();
+	});
+	$("#month").change(function(){
+		 selectChange();
+	});
+	// before submit
+	$("form").submit(function(){
+		var year=$("#year").val();
+		var month=$("#month").val();
+		var day=$("#day").val();
+		var html='<input type="hidden" name="birthday" value='+year+'-'+month+'-'+day+'> ';
+		$("#selectBir").append(html);
+	});
+
+
+
+})
+
+
+</script>
+
+</body>
+
+</html>

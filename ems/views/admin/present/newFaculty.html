@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>增加院系</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/stylesheets/web/base.css"> 
+        <style>
+            .btn-theme-cancel{
+                margin-left:20px;
+            }
+        </style>
+    </head>
+    <body>
+
+    <div class="modal fade" id="presentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" align="center" id="myModalLabel">请校长输入密码</h4>
+				</div>
+
+				<div class="modal-body">
+					<form class="form-horizontal" role="form" action="/admin_present/present" id="submitPresent" method="POST">
+					<div class="form-group">
+							<label class="col-md-3 col-sm-3 leftLabel">请输入密码：</label>
+						<div class="col-md-7 col-sm-7">
+							<input type="password" class="form-control" name="present_password" >
+						</div>  
+					</div>
+					</form>
+				</div>	
+				<div class="modal-footer">
+					<button type="button" id="presentSubmit" class="btn btn-theme">确定</button>
+					<button type="button" class="btn btn-theme-cancel" data-dismiss="modal">取消</button>
+				</div>
+			</div>
+		</div>
+	</div>
+    </body>
+
+
+    <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/layer/layer.js"></script>
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    //页面初始化
+    $('#presentModal').modal('toggle');
+    $(function(){
+        $("#presentSubmit").click(function(){
+           $("#submitPresent").submit();
+        });
+    });
+
+
+    </script>
+    </body>

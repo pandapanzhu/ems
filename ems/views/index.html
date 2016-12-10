@@ -1,0 +1,144 @@
+﻿<!doctype html>
+<html>
+<head>
+<title>主页</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/stylesheets/web/base.css"> 
+<link rel="stylesheet" href="/stylesheets/web/index.css">
+<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/bootstrap/css/bootstrap-theme.min.css">
+</head>
+
+<body>
+
+	<div class="head">
+		<div class="logo">
+		<!-- 待更改-->
+			<img src="/images/logo.jpg">
+		</div>
+		<div class="msg">
+			<div class="show">
+				<span> 欢迎您，<%=result[0].role %> : <%= result[0].name %> </span>
+			</div>
+			<div class="ctr">
+				<button class="btn1">
+					<span class="glyphicon glyphicon-lock"></span>修改密码
+				</button>
+				<button class="btn2">
+					<span class="glyphicon glyphicon-log-out"></span>安全退出
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<div class="" style="height:120%;">
+		<div class="menu fl">
+			<div class="title">
+				<span>主菜单</span>
+			</div>
+			<div class="list">
+			<!--如果角色为admin，则显示如下所示-->
+			<% if(result[0].role=="admin"){ %>
+				<ul class="yiji">
+					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-envelope"></span>班级信息管理 </a>
+						<ul style="display: none">
+							<li><a href="/admin_class/getClass"><span>O</span>班级信息管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-glass"></span>学生信息管理 </a>
+						<ul style="display: none">
+							<li><a href="/admin_student/studentInfo"><span>O</span>学生信息管理</a></li>
+							<li><a href="javascript:;"><span>O</span>33333</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-fire"></span>教师信息管理 </a>
+						<ul style="display: none">
+							<li><a href="/admin_teacher/getTeacher"><span>O</span>教师信息管理</a></li>
+							<li><a href="javascript:;"><span>O</span>222222</a></li>
+							<li><a href="javascript:;"><span>O</span>333333</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;" class="inactive"> <span
+							class="glyphicon glyphicon glyphicon-file"></span>课程信息管理
+					</a>
+						<ul style="display: none">
+
+						<!-- <li><a href="/add_check"><span>O</span>新建验收任务</a></li>
+						<li><a href="/check_list"><span>O</span>查看验收任务</a></li>
+ 						-->						
+
+						</ul></li>
+					<li><a href="javascript:;" class="inactive"> <span
+							class="glyphicon glyphicon-eye-open"></span>活动发布管理
+					</a>
+						<ul style="display: none">
+							<li><a href="/card_list"><span>O</span>查看验收卡</a></li>
+							<li><a href="javascript:;"><span>O</span>222222</a></li>
+							<li><a href="javascript:;"><span>O</span>333333</a></li>
+
+						</ul></li>
+					<li><a href="javascript:;" class="inactive"> <span
+							class="glyphicon glyphicon-warning-sign"></span>考试信息管理
+					</a>
+						<ul style="display: none">
+							<li><a href="javascript:;"><span>O</span>111</a></li>
+							<li><a href="javascript:;"><span>O</span>222222</a></li>
+							<li><a href="javascript:;"><span>O</span>333333</a></li>
+						</ul></li>
+					<li><a href="javascript:;" class="inactive"> <span
+							class="glyphicon glyphicon-warning-sign"></span>学生成绩管理
+					</a>
+						<ul style="display: none">
+							<li><a href="javascript:;"><span>O</span>111</a></li>
+							<li><a href="javascript:;"><span>O</span>222222</a></li>
+							<li><a href="javascript:;"><span>O</span>333333</a></li>
+						</ul></li>
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-volume-up"></span>系统配置
+					</a>
+						<ul style="display: none">
+							<li><a href="javascript:;"><span>O</span>人员权限配置</a></li>
+							<li><a href="/admin_present/newFaculty" id=""><span>O</span>重要信息配置</a></li>
+						</ul></li>
+				</ul>
+				<%}%>
+			</div>
+		</div>
+		
+		<div class="content fl">
+			<div class="guide clearfix">
+				<ul>
+				
+
+				<!-- <li data-url="/1.html">我的首页<span class="glyphicon glyphicon-remove"></span></li>
+				<li data-url="2.html" class="gactive">工程项目管理<span class="glyphicon glyphicon-remove"></span></li> -->
+
+
+
+				</ul>
+			</div>
+			<div class="frame">
+			
+
+			<!-- <iframe src="${basePath }static/test/1.html" frameborder="0" scrolling=true class="hide"></iframe>
+			<iframe src="${basePath }static/test/2.html" frameborder="0" scrolling=true></iframe> -->
+
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/layer/layer.js"></script>
+	<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/javascripts/web/index.js"></script>
+	<script type="text/javascript">
+
+	</script> 
+</body>
+</html>

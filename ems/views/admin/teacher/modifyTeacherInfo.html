@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+<!--<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">-->
+<style type="text/css">
+.btn-theme{
+	background:#5AB4F5;
+	font-weight:700 !important;
+	color:#fff;
+}
+.btn-theme-cancel{
+	background:#D9534F;
+	font-weight:700 !important;
+	color:#fff;
+}
+
+#showteacherId{
+	border: none;
+}
+}
+input[type="file"]{
+	width:100px;
+}
+input[type="text"]{
+	width:90%;
+	min-width:120px;
+}
+.tdwidth{
+	min-width:120px;
+	max-width:150px;
+}
+.imgs{
+	width:150px;
+	height:190px;
+}
+
+</style>
+
+</head>
+
+<body>
+<div align="center" style=" margin-left:2%; margin-right:2%;">
+<form action="/admin_teacher/doModifyTeacherInfo" method="post" enctype="multipart/form-data">
+<table class="table table-bordered">
+
+<tr>
+	<td class="tdwidth">职工号：</td>
+    <td ><input id="showteacherId" type="text" name="teacherId" value="<%=teacherInfo[0].teacherId%>" readonly /></td>
+	<td   class="tdwidth">身份证号：</td>
+	<td><input type="text" name="IdCard" value="<%=teacherInfo[0].IdCard%>"/></td>
+	<td   class="tdwidth">电话号码：</td>
+    <td><input type="text" name="phoneNo" value="<%=teacherInfo[0].phoneNo%>"/></td>
+	<!--教师证件照照片-->
+	<%if(teacherInfo[0].teacherPhoto){%>
+	<td rowspan="5" style="width:180px;" align="center" valign="middle">
+        <img src="../../uploadimages/teachers/<%=teacherInfo[0].teacherPhoto%>" class="imgs">请选择照片！
+    </td>
+	<%}else{%>
+	<td rowspan="5" style="width:180px;" align="center" valign="middle">
+        <img src="../../images/default_head.jpg" class="imgs">
+        请选择照片！
+    </td>
+	<%}%>
+	</tr>
+
+<tr>
+	<td>姓名：</td>
+    <td><input type="text" name="name" value="<%=teacherInfo[0].name%>"/></td>
+	<td>曾用名：</td>
+    <td><input type="text" name="usedname" value="<%=teacherInfo[0].usedname%>"/></td>
+	<td>性别：</td>
+	<td>
+		<% if(teacherInfo[0].gender=='女'){%>
+		<input type="radio" name="gender" value="男"/>男
+		<input type="radio" name="gender" value="女" checked="checked" />女
+		 <%}%>
+
+		<% if(teacherInfo[0].gender=='男'){%>
+		<input type="radio" name="gender" value="男" checked="checked" />男
+		<input type="radio" name="gender" value="女"/>女
+		 <%}%>
+	</td>
+</tr>
+
+<tr >
+	<td >出生年月：</td>
+	<td id="selectBir">
+		<select id="year" style="width:37%;"></select>
+		<select id="month" style="width:24%;"></select>
+		<select id="day" style="width:24%;"></select>
+	</td>
+	<td> 民族：</td>
+    <td><input type="text" name="national" value="<%=teacherInfo[0].national%>"/></td>
+	<td>政治面貌：</td>
+    <td><input type="text" name="politicalLandscape" value="<%=teacherInfo[0].politicalLandscape%>"/></td>
+</tr>
+
+<tr >
+	<td >邮箱：</td>
+    <td><input type="text" name="e_mail" value="<%=teacherInfo[0].e_mail%>"/></td>
+	<td>学历：</td>
+    <td><input type="text" name="education" value="<%=teacherInfo[0].education%>"/></td>
+	<td>学位：</td>
+    <td><input type="text" name="degree" value="<%=teacherInfo[0].degree%>"/></td>
+</tr>
+<tr >
+	<td>毕业院校：</td>
+    <td><input type="text" name="originSchool" value="<%=teacherInfo[0].originSchool%>"/></td>
+	<td >职务：</td>
+    <td><input type="text" name="office" value="<%=teacherInfo[0].office%>"/></td>
+	<td>职称：</td>
+    <td><input type="text" name="title" value="<%=teacherInfo[0].title%>"/></td>
+</tr>
+<tr >
+	<td >所属学院：</td>
+    <td><input type="text" name="faculty" value="<%=teacherInfo[0].faculty%>"/></td>
+	<td>学科方向：</td>
+    <td><input type="text" name="direction" value="<%=teacherInfo[0].direction%>"/></td>
+	<td>主修方向：</td>
+    <td><input type="text" name="major" value="<%=teacherInfo[0].major%>"/></td>
+    <td> <input type="file" name="teacherphoto" style="width:100%;" >
+</tr>
+</tr>
+
+<tr>
+	<td>教师资格证：</td>
+    <td><input type="text" name="teacherNo" value="<%=teacherInfo[0].teacherNo%>"/></td>
+	<td>人事职工号：</td>
+    <td><input type="text" name="employeeNo" value="<%=teacherInfo[0].employeeNo%>"/></td>
+	<td>实验室人员：</td>
+	<td>
+        <select name="labMan" id="selectLab" style="width:90%">
+        
+	<% if(teacherInfo[0].labMan==true){ %>
+	<option value=true>是</option>
+    <option value=false>否</option>
+	<% }else{%>
+	<option value=false>否</option>
+    <option value=true>是</option>
+	<%}%>
+	</td>
+</tr>
+<!--<tr>
+	<td> 所属系别：</td>
+	<td> <%=teacherInfo[0].department%> </td>
+</tr>-->
+</table>
+
+<input type="submit" class="btn btn-theme" value="保存" id="modify" >
+<input type="button" class="btn btn-theme-cancel" value="返回" id="back">
+
+</form>
+</div>
+
+<input type="hidden" id="getBirthday" value="<%=teacherInfo[0].birthday%>">
+
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/javascripts/web/date.js"></script>
+<script type="text/javascript">
+
+addBirthday();
+function addBirthday(){
+	var getBirthday=$("#getBirthday").val();
+	var arr=new Array();
+	arr=getBirthday.split("-");
+	var years='';
+	var months='';
+	var days='';
+
+	var year=arr[0];
+	var month=arr[1];
+	var day=arr[2];
+
+	for(var i=1900;i<=2150;i++){
+		if(i==year){
+			years+='<option  value='+i+' selected>'+i+'</option>'
+		}else{
+			years+='<option  value='+i+'>'+i+'</option>'
+		}
+	}//end for of year
+	$("#year").empty().append(years);
+	
+	for(var i=1;i<=12;i++){
+		if(i==month){
+			months+='<option  value='+i+' selected>'+i+'</option>'
+		}else{
+			months+='<option  value='+i+'>'+i+'</option>'
+		}
+	}//end for of month
+	$("#month").empty().append(months);
+	//日期因为有28日，29日，30日，31日之分，所以写在公用方法里面，方便调用
+	//设置时间的方法，减少代码重用
+	setDays(year,month,day);
+
+}//end function
+
+//当界面时间出现了改变后
+function selectChange(){
+ var year =$("#year").val();
+ var month=$("#month").val();
+ var day=$("#day").val();
+ console.log(year+','+month+','+day);
+ setDays(year,month,day);
+}
+
+$(function(){
+	$("#year").change(function(){
+		 selectChange();
+	});
+	$("#month").change(function(){
+		 selectChange();
+	});
+	// before submit
+	$("form").submit(function(){
+		var year=$("#year").val();
+		var month=$("#month").val();
+		var day=$("#day").val();
+		var html='<input type="hidden" name="birthday" value='+year+'-'+month+'-'+day+'> ';
+		$("#selectBir").append(html);
+	});
+
+	$("#back").click(function(){
+		var teacherId=$("input[name='teacherId']").val();
+		location.href="/admin_teacher/showTeacherDetail/"+teacherId;
+	});
+})
+
+
+</script>
+
+</body>
+
+</html>
