@@ -20,17 +20,19 @@ const StudentInfoShema=new mongoose.Schema({
 	postCode:{type:String,default:0},//邮编
 	ticketNo:String,//准考证号
 	education:String,//学历
-	department:String,//系-->如计算机系
+
+	faculty:String,//所属学院
 	gradeId:String,//年级
 	major:String,//专业
 	classId:String,//班级
+	
 	candidateNo:String,//考生号
 	studyYear:String,//学制
 	studentPhoto:String,//存储照片的地址
 
 	e_mail:String,//邮箱
 	national:String,//民族
-	faculty:String,//所属学院
+
 	
 	remark:{type:String,default:""},//备注
 	dlt:{type:Number,default:0},//是否删除，默认为0 ,0为不删除
@@ -45,7 +47,7 @@ const StudentInfoShema=new mongoose.Schema({
 //每次执行save方法都会调用，时间更新操作
 StudentInfoShema.pre('save',function(next){
 	if(this.isNew){
-		thiscreateAt=this.updateAt=Date.now();
+		this.createAt=this.updateAt=Date.now();
 	}else{
 		this.updateAt=Date.now();
 	}

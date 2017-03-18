@@ -5,7 +5,7 @@
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
-<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrapValidator.min.css" />
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrapValidator.min.css" />
 <style type="text/css">
 .btn-theme{
 	background:#5AB4F5;
@@ -30,13 +30,6 @@
 			<div class="col-md-6 col-md-offset-3">
 				<form action="/admin_present/doAddFaculty" method="post" class="form-horizontal" role="form" id="addFaculties">
 					<div class="form-group">
-						<label class="col-md-3 leftLabel">ID：</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" name="facultyId">
-						</div>
-					</div>
-					<!--end form-group-->
-					<div class="form-group">
 						<label class="col-md-3 leftLabel">名称：</label>
 						<div class="col-md-8">
 							<input type="text" class="form-control" name="facultyName">
@@ -44,16 +37,16 @@
 					</div>
 					<!--end form-group-->
 					<div class="form-group">
-						<label class="col-md-3 leftLabel">专业名称：</label>
+						<label class="col-md-3 leftLabel">类别：</label>
 						<div class="col-md-8">
 							<select class="form-control" name="type" id="selectType">
-								<option value="">--请选择专业名称--</option>
+								<option value="">--请选择添加类别--</option>
 								<option value="faculty">学院</option>
 								<option value="department">系</option>
 							</select>
 						</div>
 					</div>
-					
+
 				<div class="form-group">
 					<label class="col-md-5"></label>
 					<input type="submit" class="btn btn-theme" value="提交" >
@@ -88,18 +81,7 @@ $(function(){
             },
             live: "disabled",
             fields: {
-                facultyId: {
-                    message: 'ID填写错误!',
-                    validators: {
-                        notEmpty: {
-                            message: 'ID不能为空'
-                        },
-                        regexp: {
-                            regexp: /^[a-zA-Z0-9_]+$/,
-                            message: 'ID只能由字母,数字和下划线组成'
-                        }
-                    }
-                },
+                
                 facultyName: {
                     validators: {
                         notEmpty: {
@@ -110,10 +92,11 @@ $(function(){
 				type:{
 					validators:{
 						notEmpty:{
-							message:'请选择专业名称'
+							message:'请选择类别'
 						}
 					}
 				}//end type
+
             }//end fields
         });//end boostrapValidater
 });//end function

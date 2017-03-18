@@ -3,7 +3,7 @@ const mongoose=require('mongoose');
 //设置时区，默认为格林威治时间
 process.env.TZ = "Asia/Shanghai";
 
-//申明一个mongoose对象
+//申明一个mongoose对象,学生登录信息表
 var StudentSchema=new mongoose.Schema({
 	username:String,
 	password:String,

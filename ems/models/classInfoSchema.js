@@ -4,13 +4,11 @@ const mongoose=require('mongoose');
 process.env.TZ = "Asia/Shanghai";
 
 const classInfoSchema=new mongoose.Schema({
-    facultyId:String,//学院ID
-    faculty:String,//学院名称
-    department:String,//系别
-    major:String,//专业
+    facultyName:String,//学院
+    majorName:String,//专业
     gradeId:String,//年级
     classId:String,//班级
-    number:Number,//学生人数
+    studentNumber:Number,//学生人数
     teacherName:String,//班主任姓名
 
 	remark:{type:String,default:""},//备注
@@ -25,7 +23,7 @@ const classInfoSchema=new mongoose.Schema({
 //每次执行save方法都会调用，时间更新操作
 classInfoSchema.pre('save',function(next){
 	if(this.isNew){
-		thiscreateAt=this.updateAt=Date.now();
+		this.createAt=this.updateAt=Date.now();
 	}else{
 		this.updateAt=Date.now();
 	}

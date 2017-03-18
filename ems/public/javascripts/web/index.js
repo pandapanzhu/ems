@@ -1,4 +1,41 @@
 	$(function(){
+
+		$("#logout").click(function(){
+			location.href="/"
+		});
+		$("#changePsw").click(function(){
+			$("#changePswModal").modal("show");
+		});
+		$("#saveChanges").click(function(){
+			$.ajax({
+				data:$("#changePswForm").serialize(),
+				type:'post',
+				dataType:'json',
+				url:'/changePsw',
+				success:function(data){
+					var msg=data.msg;
+					if(msg=='success'){
+						parent.layer.msg("修改密码成功！");
+						setTimeout(function(){
+							location.href='/'
+						},500);
+					}else if(msg=='login'){
+						parent.layer.msg("需要先登录哦！");
+						setTimeout(function(){
+							location.href='/'
+						},500);
+					}else if(msg=='pswno'){
+						parent.layer.msg("密码不正确！");
+					}else if(msg=='repsw'){
+						parent.layer.msg("密码不一致！");
+					}else{
+						parent.layer.msg("修改失败！");
+					}
+				},error:function(){
+					parent.layer.alert("出错了，请联系管理员！")
+				}
+			})
+		})
 		
 		init();
 		function init() {

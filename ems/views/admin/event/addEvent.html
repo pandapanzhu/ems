@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>新建活动</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrapValidator.min.css" />
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-datetimepicker.min.css" />
+    </head>
+    <body>
+        <div class="container" style="margin-top:4%;">
+            <div class="row">
+			    <div class="col-md-6 col-md-offset-3">
+                    <form action="/admin_event/doAddEvent" method="POST" role="form" class="form-horizontal" id="doAddEvent">
+                    <div class="form-group">
+                        <label class="col-md-3 leftLabel">活动名称：</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="eventName"> 
+                        </div>
+                    </div>
+                    <!--end form-group-->
+                    <div class="form-group">
+                        <label class="col-md-3 leftLabel">起始时间：</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="startTime" readonly>
+                        </div>
+                    </div>
+                    <!--end form-group-->
+                    <div class="form-group">
+                        <label class="col-md-3 leftLabel">结束时间：</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="endTime" readonly>
+                        </div>
+                    </div>
+                    <!--end form-group-->
+                    <div class="form-group">
+                        <label class="col-md-3 leftLabel" >限制条件：</label>
+                        <div class="col-md-8 " id="limitation">
+                            <!--<div class="col-md-4 checkbox">
+                                <input type="checkbox" value="2010">2010级
+                            </div>
+                            <div class="col-md-4 checkbox">
+                                <input type="checkbox" value="2010">2010级
+                            </div>-->
+                        </div>
+                    </div>
+                    <!--end form-group-->
+                    <br>
+                    <div class="form-group">
+					<label class="col-md-5"></label>
+					<input type="submit" class="btn btn-theme" value="提交" >
+					<input type="button" class="btn btn-theme-cancel" value="返回" id="back">
+				</div>
+                    </form>
+			    </div>
+            </div>
+        </div>
+        <!--end container-->
+
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<!-- Bootstrap Core JavaScript -->
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrapValidator.min.js?v=1.1"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+    $("input[name='startTime']").datetimepicker({
+        format:'yyyy-mm-dd hh:ii'
+    });
+    $("input[name='endTime']").datetimepicker({
+        format:'yyyy-mm-dd hh:ii'
+    });
+
+    /**页面初始化 */
+    getGradeId();
+
+	$("#back").click(function(){
+		location.href="/admin_event/getEvent"
+	})
+
+	$("#doAddEvent").bootstrapValidator({
+            message: '信息有误',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            live: "disabled",
+            fields: {
+                eventName: {
+                    message: '活动名称填写错误!',
+                    validators: {
+                        notEmpty: {
+                            message: '活动名称不能为空'
+                        },
+                        stringLength: {
+                            min: 3,
+                            max: 30,
+                            message: '活动名称的长度应该在3-30之间'
+                        },
+                    }
+                },
+                startTime: {
+                    validators: {
+                        notEmpty: {
+                            message: '名称不能为空'
+                        }
+                    }
+                },//end startTime
+				endTime:{
+					validators:{
+						notEmpty:{
+							message:'请选择类别'
+						}
+					}
+				}//end type
+
+            }//end fields
+        });//end boostrapValidater
+});//end function
+
+function getGradeId(){
+    var html=''
+    var Year=new Date().getFullYear();
+    for(var i=5; i>0; i--){
+        html+='<div class="col-md-4 checkbox col-md-offset-2"><input type="checkbox" name="limitation" value="'+Year+'">'+Year+'级</div>'
+        Year--;
+    }
+    $("#limitation").empty().append(html);
+
+}
+</script>

@@ -3,14 +3,7 @@ const mongoose=require('mongoose');
 process.env.TZ = "Asia/Shanghai";
 //申明一个mongoose对象
 var FacultySchema=new mongoose.Schema({
-
-	facultyId:String,//学院ID
 	facultyName:String,//学院名称
-
-	//系别
-	departmentId:String,
-	departmentName:String,
-
 	type:String,//类别
 
 	dlt:{type:Number,default:0},

@@ -1,25 +1,31 @@
+const mongoose=require('mongoose');
 const Faculty=require('../../modules/faculty');
 const Department=require('../../modules/department');
-const major=require('../../modules/major');
+const Major=require('../../modules/major');
 const crypto=require('crypto');
 const Present=require('../../modules/present');
+const utils=require('../util');
+const PageInfo=require('../page');
+const Classroom=require('../../modules/classroom');
 
 
 module.exports=function(app){
     //进入校长输入密码界面
-    app.get('/admin_present/newFaculty',function(req,res){
-        res.render('admin/present/newFaculty');
+    app.get('/admin_present/newFaculty/:msg',function(req,res){
+        const msg=req.params.msg;
+        res.render('admin/present/newFaculty',{msg:msg});
     });
-    //直接进入facultyInfo
+    //直接进入学院信息管理页面
     app.get('/admin_present/getFacultyInfo',function(req,res){
         res.render('admin/present/facultyInfo');
-    })
+    });
 
-    //校长输入密码并判断正确之后，进入院系的详情页面
+    //校长输入密码并判断正确之后，进入院系的详情页相应的页面
     app.post('/admin_present/present',function(req,res){
-        const passwords=req.body.present_password;
+        //密码验证
+        const passwords=req.body.psw;
         const md5password=crypto.createHash('md5');
-        const present_password=md5password.update(req.body.present_password).digest('hex')
+        const present_password=md5password.update(passwords).digest('hex')
         console.log(present_password);
         const query={
             presentPassword:present_password
@@ -28,7 +34,7 @@ module.exports=function(app){
             if(err) throw err;
             //如果密码匹配就跳转到相应的页面，如果不匹配就返回json格式
             if(data==1){
-                res.render('admin/present/facultyInfo');
+                res.send({'msg':'success'});
             }else{
                 res.send({'msg':'error'});
             }
@@ -43,46 +49,33 @@ module.exports=function(app){
     //增加学院信息
     app.post('/admin_present/doAddFaculty',function(req,res){
         const type=req.body.type;
-        const id=req.body.facultyId;
         const name=req.body.facultyName;
         //判断type类型，并添加到数据库
         if(type==''){
             res.send({'msg':'error'});
         }
-        else if(type=="faculty"){
-          var  query={
-                facultyId:id,
-                facultyName:name,
-                type:type
-            } 
-        }else if(type=='department'){
-            var query={
-                departmentId:id,
-                departmentName:name,
-                type:type
-                }
-            }
-
-            Faculty.count({facultyId:id},function(err,data){
-                if(data==0){
-                    Faculty.create(query,function(err,data){
-                        if(err) throw err;
-                        res.render('admin/present/facultyInfo',{msg:'添加成功'});
+        var  query={
+               facultyName:name,
+               type:type
+        } 
+        //添加前的重复校验
+        Faculty.count({facultyName:name},function(err,data){
+            if(data==0){
+                  Faculty.create(query,function(err,data){
+                       if(err) throw err;
+                       res.render('admin/present/facultyInfo',{msg:'添加成功'});
                     });
                 }else{
-                    res.send('ID重复');
+                    res.send('学院名称重复');
                 }
             });//end faculty count
-});//end 
+    });//end 
 
-    //显示学院和系的基本信息
+    //显示学院的基本信息,异步操作
     app.post('/admin_present/doGetFacultyInfo',function(req,res){
-       var page=req.body.pageNum *1;
-		var size=req.body.pageSize *1;
-		var name=req.body.name;
-		var type=req.body.type;
-		var isFirstPage;
-		var isLastPage;
+        //搜索条件
+        var name=req.body.name;
+        var type=req.body.type;
 		//默认查询出所有的信息
 		var query={dlt:0}
 		//条件查询
@@ -92,100 +85,188 @@ module.exports=function(app){
 			query={
 				dlt:0,
 				[type]:name
-		    }
-		
+		}
 		}//end if
-        //定义一个json数组
-        var jsonData={jsData:[]};
-		//实现分页
-		var facultys=Faculty.find(query);
-			facultys.sort({'updateAt':-1});
-			facultys.skip((page-1)*size);
-			
-			facultys.limit(size);
-
-			facultys.exec(function(err,data){
-                if(data.length!=0){
-                    for(var i in data){
-                        if(data[i].type=='department'){
-                            datas={
-                                id:data[i].departmentId,
-                                name:data[i].departmentName,
-                                type:'系'
-                            }
-                        }else if(data[i].type=='faculty'){
-                            datas={
-                                id:data[i].facultyId,
-                                name:data[i].facultyName,
-                                type:'学院'
-                            }
-                        }
-                        //如果只定义个数组，可以用以下的方式赋值
-                        // jsonData[i]=datas
-                        jsonData.jsData.push(datas);
-
-                    }
-                }
-
-				if (err) throw err; 
-				//data为当前页的数据
-
-				//再查询一次页面,计算出查询到的数据总量-->result
-				Faculty.count(query,function(err,result){
-					if(page==1){
-						isFirstPage=true;
-					}
-					else{
-						isFirstPage=false;
-					}
-					//定义总页数，查询的条数除以每页的行数向上取整
-					var totalPage=Math.ceil(result/size);
-					//判断是否是最后一页
-					if(page==totalPage){
-						isLastPage=true;
-					}else{
-						isLastPage=false;
-					}
-					jsonArray={
-						list:jsonData.jsData,
-						total:result,
-						pages:result/size,
-						pageSize:size,
-						pageNum:page,
-						isFirstPage:isFirstPage,
-						isLastPage:isLastPage
-					};
-                res.send(jsonArray);
-				})
-
-			})
+		PageInfo.getPages(req, query, Faculty,res);
     });
 
-    //删除学院
+    //删除学院,异步操作
     app.post('/admin_present/deleteFaculty',function(req,res){
         const id=req.body.id;
         const type=req.body.type;
-        var query={};
-        if(type=="系"){
-            query={
-                departmentId:id,
+        const query={
+                facultyName:id,
+                type:type,
                 dlt:0
             }
-        }else if(type=="学院"){
-            query={
-                facultyId:id,
-                dlt:0
-            }
-        }
         //删除并更新时间
         const updates={
             dlt:1,
             updateAt:Date.now()
         }
+        //执行删除
         Faculty.update(query,{$set:updates},function(err,data){
-            res.send({msg:'success'});
+            if(data.nModified>=1){
+                res.send({msg:'success'});
+            }else{
+                res.send({msg:'error'})
+            }
+        })
+    });//end delete
+
+    //进入专业界面
+    app.get('/admin_present/queryMajor/:name',function(req,res){
+        const name=req.params.name;
+        res.render('admin/present/majorInfo',{
+            facultyname:name
+        })
+    });
+
+    //查看专业信息,异步传输
+    app.post('/admin_present/doGetMajorInfo',function(req,res){
+        //查询条件
+		var name=req.body.name;
+        const facultyName=req.body.facultyname;
+
+		var query={
+            dlt:0,
+            facultyName:facultyName
+        }
+		//条件查询
+		if(name!=''){
+			//进行一次正则，表示模糊查询
+			name=new RegExp(name);
+			query={
+				dlt:0,
+				majorName:name,
+                facultyName:facultyName
+		    }
+		}//end if
+	PageInfo.getPages(req,query, Major,res);
+
+    });
+
+    //进入添加专业页面
+    app.get('/admin_present/addMajor/:facultyname',function(req,res){
+        const facultyname=req.params.facultyname;
+        Faculty.find(function(err,data){
+            console.log(data);
+            res.render('admin/present/addMajor',{
+                facultyname:facultyname
+            });
+        });//end find  
+    });
+    /**
+     * 添加专业信息
+     */
+    app.post('/admin_present/doAddMajor',function(req,res){
+        const query=utils.getAllPostForm(req);
+        if(query.majorName==''){
+            res.render('admin/present/addMajor',{msg:'Name不能为空'});
+        }
+        Major.create(query,function(err,data){
+            if(err) throw err;
+            res.render('admin/present/majorInfo',{msg:'添加成功',facultyname:query.facultyName})
+        });
+    });
+
+    /**
+     * 删除专业信息
+     */
+    app.post('/admin_present/deleteMajor',function(req,res){
+        const _id=req.body.id;
+        const query={
+            _id:_id,
+            dlt:0
+        }
+        const updates={
+            dlt:1
+        }
+        Major.update(query,{$set:updates},function(err,data){
+            if(err) throw err;
+            if(data.nModified>0){
+                res.send({msg:'success'});
+            }else  res.send({msg:'error'});
+           
+        })
+    });//end delete
+
+
+    /**
+     * ============================学院信息操作完毕======================
+     * 
+     * ============================开始对教室信息进行操作================
+     */
+
+    /**
+     * 进入到教室管理界面
+     */
+    app.get("/admin_present/getClassroomInfo",function(req,res){
+        res.render("admin/present/classroomInfo",{msg:""});
+    });
+
+    //异步获取教室信息，并进行分页
+    app.post("/admin_present/doGetClassRoomInfo",function(req,res){
+        //获取前台传过来的信息
+        var type=req.body.type;
+        var name=req.body.name;
+        //定义查询类
+       var query={ dlt:0 }
+		//条件查询
+		if(name!='' && type!='building'){
+			//进行一次正则，表示模糊查询
+			name=new RegExp(name);
+			query={
+				dlt:0,
+				[type]:name
+		    }
+		}else if(name!='' && type=='building'){
+            query={
+				dlt:0,
+				building:name
+		    }
+        }
+	PageInfo.getPages(req,query, Classroom,res);
+    });
+
+    //进入添加教室信息页面
+    app.get("/admin_present/addClassRoom",function(req,res){
+        res.render("admin/present/addClassroom");
+    });
+
+    //添加教师，同步操作
+    app.post("/admin_present/doAddClassRoom",function(req,res){
+        const query=utils.getAllPostForm(req);
+        query.classroomName=req.body.building+"-"+req.body.classroomName;
+        
+        Classroom.create(query,function(err,data){
+            if(err) throw err;
+            res.render('admin/present/classroomInfo',{msg:'添加成功'})
+        });
+    });
+
+    //删除教室信息
+    app.post("/admin_present/deleteClassRoom",function(req,res){
+        var id=req.body.id;
+        //var _id=mongoose.Types.ObjectId(id);//将传过来的id,转换为ObjectId类型
+         const query={
+               _id:id
+            }
+        //删除并更新时间
+        const updates={
+            dlt:1,
+            updateAt:Date.now()
+        }
+        //执行删除
+        Classroom.update(query,{$set:updates},function(err,data){
+            if(data.nModified>=1){
+                res.send({msg:'success'});
+            }else{
+                res.send({msg:'error'})
+            }
         })
 
     })
+
 
 }

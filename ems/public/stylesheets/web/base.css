@@ -135,4 +135,8 @@ s, i, em {
     text-align: right;
     line-height: 34px;
 }
+.rightLabel{
+    text-align: left;
+    line-height: 34px;
+}
 

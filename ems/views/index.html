@@ -19,13 +19,13 @@
 		</div>
 		<div class="msg">
 			<div class="show">
-				<span> 欢迎您，<%=result[0].role %> : <%= result[0].name %> </span>
+				<span> 欢迎您，<%=result.role %> : <%= result.name %> </span>
 			</div>
 			<div class="ctr">
-				<button class="btn1">
+				<button class="btn1" id="changePsw">
 					<span class="glyphicon glyphicon-lock"></span>修改密码
 				</button>
-				<button class="btn2">
+				<button class="btn2" id="logout">
 					<span class="glyphicon glyphicon-log-out"></span>安全退出
 				</button>
 			</div>
@@ -38,99 +38,149 @@
 				<span>主菜单</span>
 			</div>
 			<div class="list">
-			<!--如果角色为admin，则显示如下所示-->
-			<% if(result[0].role=="admin"){ %>
+				
 				<ul class="yiji">
+					<%if(result.role=='admin'){%>
+					<!--如果角色为admin，则显示如下所示-->
+					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-glass"></span>个人信息管理 </a>
+						<ul style="display: none">
+							<li><a href="/admin_student/studentInfo"><span>O</span>学生信息管理</a></li>
+							<li><a href="/admin_teacher/getTeacher"><span>O</span>教师信息管理</a></li>
+						</ul>
+					</li>
+
+
 					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-envelope"></span>班级信息管理 </a>
 						<ul style="display: none">
 							<li><a href="/admin_class/getClass"><span>O</span>班级信息管理</a></li>
 						</ul>
 					</li>
-					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-glass"></span>学生信息管理 </a>
+
+					<li><a href="javascript:;" class="inactive"> <span
+							class="glyphicon glyphicon-eye-open"></span>活动发布管理
+						</a>
 						<ul style="display: none">
-							<li><a href="/admin_student/studentInfo"><span>O</span>学生信息管理</a></li>
-							<li><a href="javascript:;"><span>O</span>33333</a></li>
+							<li><a href="/admin_event/getEvent"><span>O</span>活动信息管理</a></li>
 						</ul>
 					</li>
-					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-fire"></span>教师信息管理 </a>
-						<ul style="display: none">
-							<li><a href="/admin_teacher/getTeacher"><span>O</span>教师信息管理</a></li>
-							<li><a href="javascript:;"><span>O</span>222222</a></li>
-							<li><a href="javascript:;"><span>O</span>333333</a></li>
-						</ul>
-					</li>
+
 					<li><a href="javascript:;" class="inactive"> <span
 							class="glyphicon glyphicon glyphicon-file"></span>课程信息管理
 					</a>
 						<ul style="display: none">
-
-						<!-- <li><a href="/add_check"><span>O</span>新建验收任务</a></li>
-						<li><a href="/check_list"><span>O</span>查看验收任务</a></li>
- 						-->						
-
+						<li><a href="/admin_course/getCourse"><span>O</span>课程信息管理</a></li>
 						</ul></li>
-					<li><a href="javascript:;" class="inactive"> <span
-							class="glyphicon glyphicon-eye-open"></span>活动发布管理
-					</a>
-						<ul style="display: none">
-							<li><a href="/card_list"><span>O</span>查看验收卡</a></li>
-							<li><a href="javascript:;"><span>O</span>222222</a></li>
-							<li><a href="javascript:;"><span>O</span>333333</a></li>
 
-						</ul></li>
 					<li><a href="javascript:;" class="inactive"> <span
 							class="glyphicon glyphicon-warning-sign"></span>考试信息管理
 					</a>
 						<ul style="display: none">
-							<li><a href="javascript:;"><span>O</span>111</a></li>
-							<li><a href="javascript:;"><span>O</span>222222</a></li>
-							<li><a href="javascript:;"><span>O</span>333333</a></li>
+							<li><a href="/admin_test/showTest"><span>O</span>考试信息管理</a></li>
 						</ul></li>
 					<li><a href="javascript:;" class="inactive"> <span
 							class="glyphicon glyphicon-warning-sign"></span>学生成绩管理
 					</a>
 						<ul style="display: none">
-							<li><a href="javascript:;"><span>O</span>111</a></li>
-							<li><a href="javascript:;"><span>O</span>222222</a></li>
-							<li><a href="javascript:;"><span>O</span>333333</a></li>
+							<li><a href="/admin_performance/showPerformance"><span>O</span>学生成绩管理</a></li>
+
 						</ul></li>
 					<li><a href="javascript:;" class="inactive"> 
-						<span class="glyphicon glyphicon-volume-up"></span>系统配置
+						<span class="glyphicon glyphicon-volume-up"></span>重要信息管理
 					</a>
 						<ul style="display: none">
-							<li><a href="javascript:;"><span>O</span>人员权限配置</a></li>
-							<li><a href="/admin_present/newFaculty" id=""><span>O</span>重要信息配置</a></li>
-						</ul></li>
+							<li><a  href="/admin_present/newFaculty/classroom"><span>O</span>教室信息管理</a></li>
+							<li><a  href="/admin_present/newFaculty/faculty"  id=""><span>O</span>学院信息管理</a></li>
+						</ul>
+					</li>
+					<!--如果登录信息是学生-->
+					<%}else if(result.role=='student'){%>
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-user"></span>个人信息管理
+					</a>
+						<ul style="display: none">
+							<li><a  href="student_person/showMyDetail"><span>O</span>查看个人信息</a></li>
+							<li><a  href="student_person/showMyPerformance"><span>O</span>考试成绩</a></li>
+							<li><a  href="javascript:;"><span>O</span>个人课表</a></li>
+							<li><a  href="student_person/showMyTest"><span>O</span>学生考试查询</a></li>
+
+						</ul>
+					</li>
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-time"></span>活动管理
+					</a>
+						<ul style="display: none">
+							<li><a  href="student_person/showAllEvent"><span>O</span>活动报名</a></li>
+							<li><a href="student_person/showMyEvent"><span>O</span>我的活动</a></li>
+						</ul>
+					</li>
+					<%}else if(result.role=='teacher'){%>
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-user"></span>个人信息管理
+					</a>
+						<ul style="display: none">
+							<li><a  href="teacher_person/showPerson"><span>O</span>查看个人信息</a></li>
+						</ul>
+					</li>
+					<%}%>
 				</ul>
-				<%}%>
 			</div>
 		</div>
 		
 		<div class="content fl">
 			<div class="guide clearfix">
 				<ul>
-				
-
 				<!-- <li data-url="/1.html">我的首页<span class="glyphicon glyphicon-remove"></span></li>
 				<li data-url="2.html" class="gactive">工程项目管理<span class="glyphicon glyphicon-remove"></span></li> -->
-
-
-
 				</ul>
 			</div>
 			<div class="frame">
-			
-
 			<!-- <iframe src="${basePath }static/test/1.html" frameborder="0" scrolling=true class="hide"></iframe>
 			<iframe src="${basePath }static/test/2.html" frameborder="0" scrolling=true></iframe> -->
-
-
-
 			</div>
 		</div>
 	</div>
 
 
+	<div class="modal fade" id="changePswModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form  class="form-horizontal" method="post" id="changePswForm">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">修改密码</h4>
+			</div>
+			<div class="modal-body">
+				
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">请输入原始密码:</label>
+					<div class="col-xs-8">
+						<input class="form-control" name="password" type="password">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">请输入新密码:</label>
+					<div class="col-xs-8">
+						<input class="form-control" name="newPassword" type="password">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">请确认密码:</label>
+					<div class="col-xs-8">
+						<input class="form-control" name="confirmPassword" type="password">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" id="saveChanges">保存</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 
 	<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>学生成绩信息管理</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+    .title{margin-top: 25px;}
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+		<div>
+			<span>根据： </span>
+			学年:
+		</div>
+		
+		<div id="changeSelect">
+		</div>
+		<div>
+			<button class="btn" id="query_btn">搜索</button>
+		</div>
+	</div>
+	<div class="c_new">
+        <button id="showAllPerformance" class="btn" onclick="QueryPerformance('','')">查看全部成绩</button> 
+	</div>
+</div>
+    <div class="col-md-9 col-md-offset-1" style="font-size: 18px; font-weight: 700;">
+        <div class="col-md-4" >
+            <div class="col-md-9 leftLabel" style="padding-right: 0;">所选学分：</div>
+            <div id="chooseCourseNo" class="col-md-1 rightLabel" style="padding-left: 0;"></div>
+        </div>
+        <div class="col-md-4" >
+            <div class="col-md-9 leftLabel" style="padding-right: 0;">获得学分:</div>
+            <div id="getCourseNo" class="col-md-1 rightLabel" style="padding-left: 0;"></div>
+        </div>
+        <div class="col-md-4">
+            <div class="col-md-9 leftLabel" style="padding-right: 0;">重修学分:</div>
+            <div id="repairCourseNo" class="col-md-1 rightLabel" style="padding-left: 0;"></div></div>
+    </div>
+
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th style="width: 90px;">学年</th>	
+			<th style="width: 50px;">学期</th>
+			<th style="width: 130px;">课程名</th>
+			<th style="width: 100px;">课程类型</th>
+            <th style="width: 150px;">所属学院</th>
+			<th style="width: 50px;">学分</th>
+			<th style="width: 50px;">绩点</th>
+            <th style="width: 50px;">成绩</th>
+            <th style="width: 80px;">补考标记</th>
+            <th style="width: 80px;">补考成绩</th>
+            <th style="width: 80px;">重修标记</th>
+            <th style="width: 80px;">重修成绩</th>
+		</tr>
+	</thead>
+	    <tbody></tbody>
+	</table>
+    
+    <div style="color: dodgerblue; font-size: 18px; font-weight: 900;">至今未通过的课程：</div>
+    <table id="noPassCourse" class="table table-hover">
+        <thead>
+            <tr>
+                <th>课程名称</th>
+                <th>课程类型</th>
+                <th>所属学院</th>
+                <th>学分</th>
+                <th>最高成绩</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+
+		//查询按钮
+		$("#query_btn").click(function(){
+			var years=$("#getYears").val();
+            var term=$("#getTerms").val();
+			QueryPerformance(years,term);
+		});
+
+        //页面初始化
+
+        //获取学生的ID，查找学生的详细信息，然后在grade中得到学生信息。
+        getYears();
+        QueryPerformance("","");
+    
+    })
+
+    function getYears(){
+        $.ajax({
+            type:'post',
+            dataType:'json',
+            url:'/student_person/getMyYears',
+            success:function(data){
+                if(data!=null){
+                    var year=data.grade;
+                    var html='<div><select class="form-control" id="getYears"><option>'+year+'-'+(++year)+'</option>'
+                    +'<option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option>'
+                    +'</select></div>'
+                    +'<div>学期:</div><div><select class="form-control" id="getTerms"><option value="">按学年查询</option><option>1</option><option>2</option><option>3</option></select></div>'
+                    $("#changeSelect").empty().append(html);
+                }
+            }
+        })
+    }
+
+
+	//动态添加页面，查询成绩
+	function QueryPerformance(year,term) {
+        var studentId="<%=studentId%>"
+		var sendData = {
+            studentId:studentId,
+			year:year,
+			term:term
+		}
+		$.ajax({
+					type : "post",
+					data : sendData,
+					dataType : "json",
+					url : "/student_person/doShowMyPerformance",
+					success : function(data) {
+						var html = "";//课程信息
+                        var html2='';//至今未通过的课程信息
+						var list = data.list;
+                        var chooseCourseNo=0;
+                        var getCourseNo=0;
+                        var repairCourseNo=0;
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<tr>' + 
+								'<td>' + list[i].years + '</td>' +
+								'<td>' + list[i].term + '</td>';+
+
+								//根据课程id获取课程的信息
+								$.ajax({
+									data:{courseId:list[i].courseId},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_performance/getCourseByCourseId',
+									success:function(data){
+										
+										html+='<td>'+data.courseName+'</td>'+
+											'<td>'+data.type+'</td>'+
+											'<td>'+data.facultyName+'</td>'+
+											'<td>'+data.courseNumber+'</td>'
+                                            
+                                            //已选学分计算
+                                            chooseCourseNo+=(data.courseNumber*1)//*1是因为弱类型，所以需要转换成可计算类型
+                                            //计算获得的学分
+                                            var results=list[i].results
+                                            if(results>=60){
+                                                getCourseNo+=(data.courseNumber*1)
+                                            }else if(list[i].repairPerformance>=60){
+                                                getCourseNo+=(data.courseNumber*1)
+                                            }else if(list[i].makeupPerformance>=60){
+                                                getCourseNo+=(data.courseNumber*1)
+                                            }
+                                            if(results<50){//计算重修学分
+                                                repairCourseNo+=(data.courseNumber*1)
+                                            }
+
+                                            if(results<50){//成绩小于50
+                                                if(list[i].repairPerformance<60){//重修成绩也小于60
+                                                    html2+='<tr>'
+                                                        +'<td>'+data.courseName+'</td>'
+                                                        +'<td>'+data.type+'</td>'
+                                                        +'<td>'+data.facultyName+'</td>'
+                                                        +'<td>'+data.courseNumber+'</td>'
+                                                        if(results>=list[i].repairPerformance){
+                                                            html2+='<td>'+results+'</td>'
+                                                        }else if(results<list[i].repairPerformance){
+                                                             html2+='<td>'+list[i].repairPerformance+'</td>'
+                                                        }
+                                                        html2+='</tr>'
+                                                }
+                                            }else if(results<60){//成绩小于60但大于50,补考
+                                            
+                                                if(list[i].makeupPerformance*1<60){//补考成绩也小于60，证明需要重修
+                                                    if(list[i].repairPerformance==""){//或者是还没有重修
+                                                        html2+='<tr>'
+                                                        +'<td>'+data.courseName+'</td>'
+                                                        +'<td>'+data.type+'</td>'
+                                                        +'<td>'+data.facultyName+'</td>'
+                                                        +'<td>'+data.courseNumber+'</td>'
+                                                        if(results>=list[i].makeupPerformance){
+                                                            html2+='<td>'+results+'</td>'
+                                                        }else if(results<list[i].makeupPerformance){
+                                                             html2+='<td>'+list[i].makeupPerformance+'</td>'
+                                                        }
+                                                        html2+='</tr>'
+                                                    }
+                                                    else if(list[i].repairPerformance<60){//重修成绩也小于60
+                                                    html2+='<tr>'
+                                                        +'<td>'+data.courseName+'</td>'
+                                                        +'<td>'+data.type+'</td>'
+                                                        +'<td>'+data.facultyName+'</td>'
+                                                        +'<td>'+data.courseNumber+'</td>'
+                                                        if(results>=list[i].repairPerformance){
+                                                            html2+='<td>'+results+'</td>'
+                                                        }else if(results<list[i].repairPerformance){
+                                                             html2+='<td>'+list[i].repairPerformance+'</td>'
+                                                        }
+                                                        html2+='</tr>'
+                                                }
+                                                     
+                                                }
+
+                                            }
+
+									},error:function(data){
+										parent.layer.alert("获取课程信息出错！请联系管理员！");
+									}
+								});
+
+                                html+='<td>' + list[i].point + '</td>' +
+                                '<td>' + list[i].results + '</td>' +
+                                '<td>' + list[i].makeup + '</td>' +
+                                '<td>' + list[i].makeupPerformance + '</td>' +
+                                '<td>' + list[i].repair + '</td>' +
+                                '<td>' + list[i].repairPerformance + '</td>' +
+								'</tr>';
+
+
+
+							}//end for
+						} else {
+						layer.msg("没有搜索到您要查看的信息");
+						}
+                        if(list.length>0){//计算学分
+                           for(var i in list){
+                              
+                           }
+                        }
+                        $("#chooseCourseNo").empty().append(chooseCourseNo);
+                        $("#getCourseNo").empty().append(getCourseNo);
+                        $("#repairCourseNo").empty().append(repairCourseNo);
+						$("#mytable tbody").empty().append(html);
+                        $("#noPassCourse tbody").empty().append(html2);
+					},//end success
+					error:function(){
+						alert("哪儿出错了呢！");
+					}
+				});//end ajax
+	}
+	
+
+
+
+</script>
+
+</html>

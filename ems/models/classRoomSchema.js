@@ -1,0 +1,30 @@
+const mongoose=require('mongoose');
+
+//设置时区，默认为格林威治时间
+process.env.TZ = "Asia/Shanghai";
+
+const classRoomSchema=new mongoose.Schema({
+
+    classroomName:String,//教室名称
+    building:String,//教学楼
+   	roomType:String,//教室大小，s能承载两个教学班，一个考试班,l能承载3个教学班，两个考试班
+	remark:{type:String,default:""},//备注
+	dlt:{type:Number,default:0},//是否删除，默认为0 ,0为不删除
+	createAt:{type:Date,default:Date.now()},
+	updateAt:{type:Date,default:Date.now()}
+
+},{
+		versionKey:false	//mongoose自动生成versionkey,设置为false可以防止其生成
+	});
+
+//每次执行save方法都会调用，时间更新操作
+classRoomSchema.pre('save',function(next){
+	if(this.isNew){
+		this.createAt=this.updateAt=Date.now();
+	}else{
+		this.updateAt=Date.now();
+	}
+	next();
+});
+
+module.exports=classRoomSchema;

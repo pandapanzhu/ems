@@ -29,14 +29,14 @@
 
 <tr>
 	<td class="tdwidth" style="width: 120px;">职工号：</td>
-	<td > <%=teacherInfo[0].teacherId%></td>
+	<td > <%=teacherInfo.teacherId%></td>
 	<td class="tdwidth" style="width:120px;">身份证号：</td>
-	<td><%=teacherInfo[0].IdCard%></td>
+	<td><%=teacherInfo.IdCard%></td>
 	<td class="tdwidth" style="width:150px !important;">电话号码：</td>
-	<td><%=teacherInfo[0].phoneNo%></td>
+	<td><%=teacherInfo.phoneNo%></td>
 	<!--教师证件照照片-->
-	<%if(teacherInfo[0].teacherPhoto){%>
-	<td rowspan="5" style="width:180px;" align="center" valign="middle"><img src="../../uploadimages/teachers/<%=teacherInfo[0].teacherPhoto%>" class="imgs"></td>
+	<%if(teacherInfo.teacherPhoto){%>
+	<td rowspan="5" style="width:180px;" align="center" valign="middle"><img src="../../uploadimages/teachers/<%=teacherInfo.teacherPhoto%>" class="imgs"></td>
 	<%}else{%>
 	<td rowspan="5" style="width:180px;" align="center" valign="middle"><img src="../../images/default_head.jpg" class="imgs"></td>
 	<%}%>
@@ -44,17 +44,17 @@
 
 <tr>
 	<td>姓名：</td>
-	<td><%=teacherInfo[0].name%></td>
+	<td><%=teacherInfo.name%></td>
 	<td>曾用名：</td>
-	<td><%=teacherInfo[0].usedname%></td>
+	<td><%=teacherInfo.usedname%></td>
 	<td>性别：</td>
 	<td>
-		<% if(teacherInfo[0].gender=='女'){%>
+		<% if(teacherInfo.gender=='女'){%>
 		<input type="radio" name="gender" value="男"/>男
 		<input type="radio" name="gender" value="女" checked="checked" />女
 		 <%}%>
 
-		<% if(teacherInfo[0].gender=='男'){%>
+		<% if(teacherInfo.gender=='男'){%>
 		<input type="radio" name="gender" value="男" checked="checked" />男
 		<input type="radio" name="gender" value="女"/>女
 		 <%}%>
@@ -63,48 +63,48 @@
 
 <tr >
 	<td >出生年月：</td>
-	<td ><%=teacherInfo[0].birthday%></td>
+	<td ><%=teacherInfo.birthday%></td>
 	<td> 民族：</td>
-	<td ><%=teacherInfo[0].national%></td>
+	<td ><%=teacherInfo.national%></td>
 
 	<td>政治面貌：</td>
-	<td><%=teacherInfo[0].politicalLandscape%></td>
+	<td><%=teacherInfo.politicalLandscape%></td>
 </tr>
 
 <tr >
 	<td >邮箱：</td>
-	<td ><%=teacherInfo[0].e_mail%></td>
+	<td ><%=teacherInfo.e_mail%></td>
 	<td>学历：</td>
-	<td><%=teacherInfo[0].education%></td>
+	<td><%=teacherInfo.education%></td>
 	<td>学位：</td>
-	<td><%=teacherInfo[0].degree%> </td>
+	<td><%=teacherInfo.degree%> </td>
 </tr>
 <tr >
 	<td>毕业院校：</td>
-	<td><%=teacherInfo[0].originSchool%></td>
+	<td><%=teacherInfo.originSchool%></td>
 	<td >职务：</td>
-	<td ><%=teacherInfo[0].office%></td>
+	<td ><%=teacherInfo.office%></td>
 	<td>职称：</td>
-	<td><%=teacherInfo[0].title%></td>
+	<td><%=teacherInfo.title%></td>
 </tr>
 <tr >
 	<td >所属学院：</td>
-	<td ><%=teacherInfo[0].faculty%></td>
+	<td ><%=teacherInfo.faculty%></td>
 	<td>学科方向：</td>
-	<td><%=teacherInfo[0].direction%></td>
+	<td><%=teacherInfo.direction%></td>
 	<td>主修方向：</td>
-	<td><%=teacherInfo[0].major%></td>
+	<td><%=teacherInfo.major%></td>
 </tr>
 </tr>
 
 <tr>
 	<td>教师资格证：</td>
-	<td><%=teacherInfo[0].teacherNo%></td>
+	<td><%=teacherInfo.teacherNo%></td>
 	<td>人事职工号：</td>
-	<td><%=teacherInfo[0].employeeNo%></td>
+	<td><%=teacherInfo.employeeNo%></td>
 	<td>是否实验室人员：</td>
 	<td>
-	<% if(teacherInfo[0].labMan==true){ %>
+	<% if(teacherInfo.labMan==true){ %>
 	是
 	<% }else{%>
 	否
@@ -113,7 +113,7 @@
 </tr>
 <!--<tr>
 	<td> 所属系别：</td>
-	<td> <%=teacherInfo[0].department%> </td>
+	<td> <%=teacherInfo.department%> </td>
 </tr>-->
 </table>
 
@@ -129,21 +129,19 @@
 <script type="text/javascript" src="/layer/layer.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-var message=$("#getMessage").val();
-if (message!=null &&message!=''){
-	layer.msg(message);
-}
+
 
 
 $(function(){
-	// $("form").submit(function(){
-	// 	parent.layer.alert("我要提交了！");
-	// })
+	var message=$("#getMessage").val();
+	if (message!=null &&message!=''){
+		parent.layer.msg(message);
+	}
 	$("#back").click(function(){
 		location.href='/admin_teacher/getTeacher';
 	});
 	$("#modify").click(function(){
-		var id = <%=teacherInfo[0].teacherId %>;
+		var id = "<%=teacherInfo._id %>";
 		location.href="/admin_teacher/modifyTeacherInfo/"+id;
 	})
 });

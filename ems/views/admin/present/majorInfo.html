@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>专业信息查询</title>
+    	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+		body{background:#F8F8F8;}
+		.show{border:1px solid red;}
+		.title{background:#fff;margin-top:25px;height:54px;border:1px solid #E7EBEB;position:relative;}
+		.title .c_search{margin:10px 0 10px 25px;line-height:30px;width:600px;float:left;}
+		.c_search div{float:left;margin-left:3px;}
+		.c_search form-control{border-color:#EFEFEF;}
+		.c_search div select{width: 150px; height: 34px;}
+		.c_search .btn{background:#5AB4F5;cursor:pointer;font-weight:700;color:#fff;width:60px;}
+		.title .c_new{min-width:200px;height:30px;float:right;margin:10px 50px 10px 10px;}
+		.title .c_new .btn{background:#5AB4F5;font-weight:700;color:#fff;}
+		.mytable{text-align: center;}
+
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+		<div>
+			专业名称：
+		</div>
+		<div>
+			<input type="text" name="search" id="condition" class="form-control">		
+		</div>
+		<div>
+			<button class="btn" id="query_btn">搜索</button>
+		</div>
+	</div>
+	<div class="c_new">
+		<button class="btn" id="newMajor">新建专业</button>
+		<button class="btn" id="returnFaculty">返回上一层</button>
+	</div>
+</div>
+	
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th>专业ID</th>	
+			<th>专业名称</th>
+			<th>所属学院</th>
+			<th colspan="2" style="min-width:100px;">操作</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+	</table>
+
+		<div class="bottom">
+			<div class="selectbtn">
+				每页显示
+				<select name="numsize" id="numsize">
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					</select>
+					条,共<label style="color: #85D9C8" id="total">0</label>	条
+			</div>
+			<div class="page ">
+				<ul id="pageul">
+					
+				</ul>
+			</div>
+		</div>
+<input type="hidden" id="facultyname" value="<%=facultyname%>">
+
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	//页面初始化
+	QueryMajor(1,2,"");
+
+	$(function(){
+		$("#returnFaculty").click(function(){
+			location.href='/admin_present/getFacultyInfo';
+		})
+
+		$("#newMajor").click(function(){
+			var facultyname=$('#facultyname').val();
+			location.href="/admin_present/addMajor/"+facultyname;
+		});
+
+		//每页显示多少条数据
+		$("#numsize").change(function(){
+			var numsize=$("#numsize").val();
+			var condition=$("#condition").val();
+			QueryClass(1,numsize,condition);
+		});
+
+
+		//查询信息
+		$("#query_btn").click(function(){
+			var numsize=$("#numsize").val();
+			var condition=$("#condition").val();
+			QueryMajor(1,numsize,condition);
+		});
+	})
+
+
+
+
+	//动态添加页面，并实现分页
+	function QueryMajor(pageNum, pageSize,condition) {
+        var facultyname=$('#facultyname').val();
+		var sendData = {
+			name : condition,
+			pageNum : pageNum,
+			pageSize : pageSize,
+            facultyname:facultyname
+		}
+		$.ajax({
+					type : "post",
+					data : sendData,
+					dataType : "json",
+					url : "/admin_present/doGetMajorInfo",
+					success : function(data) {
+						$("#total").html(data.total);
+						var html = "";
+						var list = data.list;
+						
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<tr>' + 
+								'<td>' + list[i]._id + '</td>' +
+								'<td>' + list[i].majorName + '</td>' +
+								'<td>' + list[i].facultyName + '</td>' +
+								'<td class="col-md-2 col-xs-3">'+
+								'<a href="javascript:;"  data-id="'+list[i]._id+'" class="deleteMajor">删除</a>'+
+								'</tr>';
+							}//end for
+						} else {
+						layer.msg("没有搜索到您要查看的信息");
+						}
+						// 分页标签
+						if (list.length > 0) {
+							var html2 = "<li><button style='width:60px;text-align: center' id='prepage'>上一页</button>"
+									+ "</li><li id='firstPage'><button>1</button></li>";
+							
+							for (var i = 1; i < data.pages; i++) {
+								html2 += '<li id=btn' + (i + 1) + '><button>'
+										+ (i + 1) + '</button></li>';
+							}
+							
+							html2 += '<li><button style="width:60px;text-align: center" id="nextpage">下一页</button></li>';
+						}
+
+						$("#pageul").empty().append(html2);
+						$("#mytable tbody").empty().append(html);
+						
+						
+
+						//删除信息
+						$(".deleteMajor").click(function(){
+							var id=$(this).data("id");
+							$.ajax({
+								data:{id:id},
+								type:'post',
+								dataType:'json',
+								url:'/admin_present/deleteMajor',
+								success:function(data){
+									if(data.msg=='success'){
+										layer.msg('删除成功');
+										QueryMajor(pageNum,pageSize,condition);
+									}
+								}
+							});//end ajax
+						});
+
+						//上一页
+						$("#prepage").off().click(function() {
+									if (data.isFirstPage == true) {
+
+									layer.msg("当前已是首页");
+									} else {
+										QueryMajor(data.pageNum - 1,
+												data.pageSize, condition);
+									}
+								});
+
+						//下一页
+						$("#nextpage").off().click(function() {
+									if (data.isLastPage == true) {
+										layer.msg("当前已是尾页");
+									} else {
+										QueryMajor(data.pageNum + 1,
+												data.pageSize, condition);
+									}
+								});
+						//第一页
+						$("#firstPage").off().click(function() {
+							if (data.isFirstPage == true) {
+								layer.msg("当前已是首页");
+							} else {
+								QueryMajor(1, data.pageSize, condition);
+							}
+						});
+						//2,3,4..... 注意闭包问题
+						for (var i = 1; i < data.pages; i++) {
+							(function(arg) {
+								$("#btn" + (arg)).off().click(function() {
+									QueryMajor(arg, data.pageSize, condition);
+								});
+							})(i + 1);
+						}
+
+					},//end success
+					error:function(){
+						layer.alert("哪儿出错了呢！");
+					}
+				});//end ajax
+	}
+
+
+</script>
+
+</html>

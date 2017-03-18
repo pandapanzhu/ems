@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>录入考试信息</title>
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrapValidator.min.css" />
+        <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-datetimepicker.min.css">
+    </head>
+    <body>
+        <div class="container" style="margin-top:4%;">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <form action="/admin_test/doAddTest" method="post" class="form-horizontal" role="form" >
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">课程名称:</label>
+                            <div class="col-xs-8">
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                    <select id="showFaculty" class="form-control" >
+                                        <option>--请选择学院--</option>
+                                    <% for(var i in faculty){%>
+                                            <option><%=faculty[i].facultyName%></option>
+                                    <%}%>
+                                    </select>
+                                </div>
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                     <select id="showCourse" class="form-control" name="courseId">
+                                         <option>--请先选择学院--</option>
+                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">考试班级:</label>
+                            <div class="col-xs-8">
+                                <div class="col-xs-12" style="padding-right:0px; padding-left:0px;">
+                                    <select class="form-control" id="showGrade" name="grade">
+                                        <option value="">--请选择年级--</option> 
+                                         <% for(var i in classes){%>
+                                            <option value="<%=classes[i]%>"><%=classes[i]%>级</option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                    <select class="form-control" id="showMajor" name="major">
+                                        <option value="">--请先选择年级--</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                    <select class="form-control" id="showClass" name="classes">
+                                        <option value="">--请先选择年级--</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">考试开始时间:</label>
+                            <div class="col-xs-8">
+                                <input type="text" name="starttime" class="form-control datepicker" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">考试结束时间:</label>
+                            <div class="col-xs-8">
+                                <input type="text" name="endtime" class="form-control datepicker" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">考试地点:</label>
+                            <div class="col-xs-8">
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                    <select class="form-control" id="building" >
+                                        <option value="">--请选择教学楼--</option>
+                                        <option value=1>1教</option>
+                                        <option value=2>2教</option>
+                                        <option value=3>3教</option>
+                                        <option value=4>4教</option>
+                                        <option value=5>5教</option>
+                                        <option value=6>6教</option>
+                                        <option value=7>7教</option>
+                                        <option value=8>8教</option>
+                                        <option value=9>9教</option>
+                                        <option value=10>10教</option>
+                                        <option value=11>11教</option>
+                                        <option value=12>12教</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
+                                    <select class="form-control"id="showClassRoom" name="address">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-3 leftLabel">考试类型:</label>
+                            <div class="col-xs-8">
+                                <select name="testtype" class="form-control" >
+                                    <option>开卷</option>
+                                    <option>闭卷</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-5"></label>
+                            <div class="col-xs-6">
+                                <button type="submit" class="btn btn-theme">保存</button>
+                                <button type="button" class="btn btn-theme-cancel">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/layer/layer.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrapValidator.min.js?v=1.0"></script>
+    <script type="text/javascript" src="/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            //页面初始化
+            $(".datepicker").datetimepicker({
+                language:"zh-CH",
+                autoclose:true,
+                format:"yyyy-mm-dd hh:ii"
+            });
+            $("form").submit(function(){
+                var starttime=$("input[name=starttime]").val();
+                if(starttime=""){
+                    parent.layer.alert("请选择开始时间！");
+                    return false;
+                }
+                var endtime=$("input[name=endtime]").val();
+                if(endtime=""){
+                    parent.layer.alert("请选择结束时间！");
+                    return false;
+                }
+            });
+
+            //bootstrap校验
+            $("form").bootstrapValidator({
+                message: '信息有误',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                live: "disabled",
+                fields: {
+                    courseId: {
+                        validators: {
+                            notEmpty: {
+                                message: '请选择课程！'
+                            }
+                        }
+                    },
+                    grade: {
+                        validators: {
+                            notEmpty: {
+                                message: '请选择年级！'
+                            }
+                        }
+                    },
+                    major: {
+                        validators: {
+                            notEmpty: {
+                                message: '请选择专业！'
+                            }
+                        }
+                    },
+                    classes: {
+                        validators: {
+                            notEmpty: {
+                                message: '请选择班级！'
+                            }
+                        }
+                    },
+                    address:{
+                        validators:{
+                            notEmpty:{
+                                message:'考试地点不能为空'
+                            }
+                        }
+                    }
+                }
+            });
+
+           $("#showFaculty").change(function(){
+                var name=$(this).val();
+                $.ajax({
+                    data:{name:name},
+                    type:'post',
+                    dataType:'json',
+                    url:'/admin_test/getCourseByFaculty',
+                    success:function(data){
+                       if(data.length>0){
+                           var html=''
+                           for(var i in data){
+                               html+='<option value="'+data[i]._id+'">'+data[i].courseName+'</option>'
+                           }
+                           $("#showCourse").empty().append(html);
+                       }else{
+                            parent.layer.msg("没有对应的课程！");
+                            $("#showCourse").empty()
+                        }
+                    },error:function(){
+                    parent.layer.msg("出错了哦，请联系管理员！")
+                    }
+                    });//end ajax
+            })//end change
+        $("#showGrade").change(function(){
+            var grade=$(this).val();
+            $.ajax({
+                data:{gradeId:grade},
+                type:'post',
+                dataType:'json',
+                url:'/admin_test/getMajorByGrade',
+                success:function(data){
+                    if(data.length>0){
+                        var html='<option value="">--请先选择年级--</option>'
+                        for(var i in data){
+                            html+='<option>'+data[i]+'</option>'
+                        }
+                        $("#showMajor").empty().append(html);
+                    }else{
+                        parent.layer.msg('没有对应的专业！');
+                        $("#showMajor").empty();
+                    } 
+                },error:function(){
+                    parent.layer.alert("出错了哦！请联系管理员！");
+                }
+            })
+        });//end change
+        $("#showMajor").change(function(){
+           var major=$(this).val();
+           var grade=$("#showGrade").val();
+           $.ajax({
+               data:{major:major,grade:grade},
+               type:'post',
+               dataType:'json',
+               url:'/admin_test/getClassByMajor',
+               success:function(data){
+                   if(data.length>0){
+                       var html=''
+                        for(var i in data){
+                            html+='<option>'+data[i]+'</option>'
+                        }
+                        $("#showClass").empty().append(html);
+                    }
+                    else{
+                        parent.layer.msg('没有对应的班级！');
+                        $("#showClass").empty();
+                    } 
+               },error:function(){
+                   parent.layer.msg('出错了，请联系管理员！');
+               }
+           })
+        });//end change
+        $("#building").change(function(){
+            var build=$(this).val();
+            $.ajax({
+                data:{building:build},
+                type:'post',
+                dataType:'json',
+                url:'/admin_test/getClassroomByBuild',
+                success:function(data){
+                    if(data.length>0){
+                         var html='<option value="">--请选择教室--</option>'
+                        for(var i in data){
+                            html+='<option>'+data[i].classroomName+'</option>'
+                        }
+                        $("#showClassRoom").empty().append(html);
+                    }else{
+                        parent.layer.msg("没有找到对应的教室！");
+                        $("#showClassRoom").empty();
+                    }
+                },error:function(){
+                    parent.layer.alert("有错哦！请联系管理员！");
+                }
+            })
+        });
+        // $("#showClassRoom").change(function(){
+        //     var starttime=$("input[name=starttime]").val();
+        //     var endtime=$("input[name=endtime]").val();
+        //     var classroom=$("#showClassRoom").val();
+        //     $.ajax({
+        //         data:{starttime:starttime,endtime:endtime,classroom:classroom},
+        //         type:'post',
+        //         dataType:'json',
+        //         url:'/admin_test/checkRoomAndTime',
+        //         success:function(data){
+                    
+        //         }
+        //     })
+        // })
+        $(".btn-theme-cancel").click(function(){
+            location.href="/admin_test/showTest"
+        })
+        })//end ready
+
+    </script>
+</html>
+                               

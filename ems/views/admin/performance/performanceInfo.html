@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>学生成绩信息管理</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+		<div>
+			<span>根据： </span>
+			<select id="selectType">
+                <option value="studentName">学生姓名</option>
+				<option value="years">学年</option>
+                <option value="courseName">课程名</option>
+				<option value="type">分类</option>
+			</select>
+		</div>
+		
+		<div id="changeSelect">
+			<input type="text"  id="condition" class="form-control">		
+		</div>
+		<div>
+			<button class="btn" id="query_btn">搜索</button>
+		</div>
+	</div>
+	<div class="c_new">
+		<button class="btn" id="newPerformance">增加学生成绩</button>
+	</div>
+</div>
+	
+
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th style="width: 90px;">学年</th>	
+			<th style="width: 50px;">学期</th>
+			<th style="width: 90px;">学生</th>
+			<th style="width: 85px;">课程名</th>
+			<th style="width: 100px;">课程类型</th>
+            <th style="width: 150px;">所属学院</th>
+			<th style="width: 50px;">学分</th>
+			<th style="width: 50px;">绩点</th>
+            <th style="width: 50px;">成绩</th>
+            <th style="width: 80px;">补考标记</th>
+            <th style="width: 80px;">补考成绩</th>
+            <th style="width: 80px;">重修标记</th>
+            <th style="width: 80px;">重修成绩</th>
+			<th style="width: 100px;">操作</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+	</table>
+
+		<div class="bottom">
+			<div class="selectbtn">
+				每页显示
+				<select name="numsize" id="numsize">
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					</select>
+					条,共<label style="color: #85D9C8" id="total">0</label>	条
+			</div>
+			<div class="page ">
+				<ul id="pageul">
+					
+				</ul>
+			</div>
+		</div>
+
+<div class="modal fade" id="showMyResults" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form action="/admin_performance/modifyResult" class="form-horizontal" method="post">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">修改成绩</h4>
+			</div>
+			<div class="modal-body">
+				
+				<div id="showId">
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">修改后的成绩:</label>
+					<div class="col-xs-8">
+						<input class="form-control" name="results" >
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button type="submit" class="btn btn-primary" >保存</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+				
+<input type="hidden" value="<%=msg%>" id="hiddenMsg">
+
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+
+		//增加
+		$("#newPerformance").click(function(){
+			location.href="/admin_performance/addPerformance"
+		});
+
+		//每页显示多少条数据
+		$("#numsize").change(function(){
+			var numsize=$("#numsize").val();
+			var condition=$("#condition").val();
+			var type=$("#selectType").val();
+			QueryPerformance(1,numsize,type,condition);
+		});
+
+		//查询按钮
+		$("#query_btn").click(function(){
+			var numsize=$("#numsize").val();
+			var type=$("#selectType").val();
+			var condition=$("#condition").val();
+			QueryPerformance(1,numsize,type,condition);
+		});
+
+        
+        $("#selectType").change(function(){
+            var year=new Date().getFullYear();
+            var v=$(this).val();
+            var html=''
+            if(v=='years'){
+                html+='<select id="condition" class="form-control">'
+                    +'<option>'+year+'-'+--year+'</option>'
+                    +'<option>'+year+'-'+--year+'</option>'
+                    +'<option>'+year+'-'+--year+'</option>'
+                    +'<option>'+year+'-'+--year+'</option>'
+                    +'<option>'+year+'-'+--year+'</option>'
+                    +'</select>'
+            }else if(v=='type'){
+                  html+='<select id="condition" class="form-control">'
+                  +'<option>人文素养类</option>'
+                  +'<option>科学素养类</option>'
+                  +'<option>艺术与体育类</option>'
+                  +'<option>心理健康类</option>'
+                  +'<option>传统文化类</option>'
+                  +'</select>'
+            }else{
+                html+='<input type="text"  id="condition" class="form-control">'
+            }
+            $("#changeSelect").empty().append(html);
+        })
+
+	})
+	//页面初始化
+	QueryPerformance(1,2,"","");
+	var msg=$("#hiddenMsg").val();
+	if(msg!=''){
+		parent.layer.msg(msg);
+	}
+
+
+
+	//动态添加页面，并实现分页
+	function QueryPerformance(pageNum, pageSize,type,condition) {
+
+		var sendData = {
+			name : condition,
+			pageNum : pageNum,
+			pageSize : pageSize,
+			type:type
+		}
+		$.ajax({
+					type : "post",
+					data : sendData,
+					dataType : "json",
+					url : "/admin_performance/doGetPerformance",
+					success : function(data) {
+						$("#total").html(data.total);
+						var html = "";
+						var list = data.list;
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<tr>' + 
+								'<td>' + list[i].years + '</td>' +
+								'<td>' + list[i].term + '</td>';
+								//根据学生id获取学生的姓名
+								$.ajax({
+									data:{studentId:list[i].studentId},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_performance/getStudentNameByStudentId',
+									success:function(data){
+										html+='<td>'+data.studentName+'</td>'
+									},error:function(data){
+										alert("出错了哦！");
+									}
+								});
+
+								//根据课程id获取课程的信息
+								$.ajax({
+									data:{courseId:list[i].courseId},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_performance/getCourseByCourseId',
+									success:function(data){
+										
+										html+='<td>'+data.courseName+'</td>'+
+											'<td>'+data.type+'</td>'+
+											'<td>'+data.facultyName+'</td>'+
+											'<td>'+data.courseNumber+'</td>'
+									},error:function(data){
+										parent.layer.alert("出错了哦！");
+									}
+								});
+
+                                html+='<td>' + list[i].point + '</td>' +
+                                '<td>' + list[i].results + '</td>' +
+                                '<td>' + list[i].makeup + '</td>' +
+                                '<td>' + list[i].markeupPerformance + '</td>' +
+                                '<td>' + list[i].repair + '</td>' +
+                                '<td>' + list[i].repairPerformance + '</td>' +
+								'<td>'+
+								'<a href="javascript:;"  class="modifyDetail" data-id="'+list[i]._id+'" >修改</a>&nbsp;|&nbsp;'+
+								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i]._id+'"  class="deletePerformance">删除</a>'+
+								'</tr>';
+							}//end for
+						} else {
+						layer.msg("没有搜索到您要查看的信息");
+						}
+						// 分页标签
+						if (list.length > 0) {
+							var html2 = "<li><button style='width:60px;text-align: center' id='prepage'>上一页</button>"
+									+ "</li><li id='firstPage'><button>1</button></li>";
+							
+							for (var i = 1; i < data.pages; i++) {
+								html2 += '<li id=btn' + (i + 1) + '><button>'
+										+ (i + 1) + '</button></li>';
+							}
+							
+							html2 += '<li><button style="width:60px;text-align: center" id="nextpage">下一页</button></li>';
+						}
+
+						$("#pageul").empty().append(html2);
+						$("#mytable tbody").empty().append(html);
+
+						//修改考试详细信息
+						$(".modifyDetail").click(function(){
+							var id=$(this).data("id");
+							var html='<input type="hidden" value="'+id+'" id="hiddenModalId" name="hiId">'
+							$("#showId").empty().append(html);
+							$("#showMyResults").modal("show");
+						});
+
+						//删除考试信息
+						$(".deletePerformance").click(function(){
+							var sendData={
+								id:$(this).data("id")
+							}
+							$.ajax({
+								type:'post',
+								dataType:'json',
+								url:"/admin_performance/deletePerformance",
+								data:sendData,
+								success:function(data){
+									if(data.msg=='success'){
+										layer.msg('删除成功');
+										QueryPerformance(1, pageSize,type,condition);
+									}else{
+										parent.layer.msg('删除失败');
+									}
+								},error:function(data){
+									parent.layer.alert('删除失败');
+								}
+							})//end ajax	
+						});//end delete
+						/**查看班级学生信息 */
+						$(".showStudentById").click(function(){
+							var id=$(this).data("id");
+							location.href='/admin_class/showStudentInfoById/'+id;
+						})
+
+						//上一页
+						$("#prepage").off().click(function() {
+									if (data.isFirstPage == true) {
+
+									parent.layer.msg("当前已是首页");
+									} else {
+										QueryPerformance(data.pageNum - 1,
+												data.pageSize,type, condition);
+									}
+								});
+
+						//下一页
+						$("#nextpage").off().click(function() {
+									if (data.isLastPage == true) {
+										parent.layer.msg("当前已是尾页");
+									} else {
+										QueryPerformance(data.pageNum + 1,
+												data.pageSize,type, condition);
+									}
+								});
+						//第一页
+						$("#firstPage").off().click(function() {
+							if (data.isFirstPage == true) {
+								parent.layer.msg("当前已是首页");
+							} else {
+								QueryPerformance(1, data.pageSize,type, condition);
+							}
+						});
+						//2,3,4..... 注意闭包问题
+						for (var i = 1; i < data.pages; i++) {
+							(function(arg) {
+								$("#btn" + (arg)).off().click(function() {
+									QueryPerformance(arg, data.pageSize,type, condition);
+								});
+							})(i + 1);
+						}
+
+					},//end success
+					error:function(){
+						alert("哪儿出错了呢！");
+					}
+				});//end ajax
+	}
+	
+
+
+
+</script>
+
+</html>

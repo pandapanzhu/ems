@@ -1,11 +1,12 @@
 const mongoose=require('mongoose');
 //设置时区，默认为格林威治时间
 process.env.TZ = "Asia/Shanghai";
-
+//教师登录信息表
 const TeacherSchema=new mongoose.Schema({
 username:String,
 password:String,
 role:{type:String,default:'teacher'},
+name:String,
 dlt:{type:Number,default:0},
 remark:String,
 createAt:{type:Date,default:Date.now()},

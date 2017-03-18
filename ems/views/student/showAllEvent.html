@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>查看活动信息</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+    .title{margin-top: 25px;}
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+		<div>
+			<span>根据： </span>
+			学年:
+		</div>
+		
+		<div id="changeSelect">
+		</div>
+	</div>
+</div>
+
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th>活动名称</th>	
+			<th>限制</th>
+			<th>起始时间</th>
+			<th>结束时间</th>
+			<th style="min-width:100px;">操作</th>
+		</tr>
+	</thead>
+	    <tbody></tbody>
+	</table>
+
+
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+
+        //页面初始化
+        getYears();
+
+        var year= $("#changeSelect select").val();
+        QueryEventInfo(year);
+
+        $("#changeSelect select").change(function(){
+            var year=$(this).val();
+            QueryEventInfo(year);
+        })
+    })
+
+    function getYears(){
+        $.ajax({
+            async:false,
+            type:'post',
+            dataType:'json',
+            url:'/student_person/getMyYears',
+            success:function(data){
+                if(data!=null){
+                    var year=data.grade;
+                    var html='<div><select class="form-control" id="getYears"><option>'+year+'-'+(++year)+'</option>'
+                    +'<option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option>'
+                    +'</select></div>'
+                    $("#changeSelect").empty().append(html);
+                }
+            }
+        })
+    }
+
+
+	//动态添加页面，查询成绩
+	function QueryEventInfo(year) {
+		var sendData = {
+			year:year
+		}
+		$.ajax({
+					type : "post",
+					data : sendData,
+					dataType : "json",
+					url : "/student_person/getAllEvent",
+					success : function(data) {
+                        var list=data.list;
+                        var html=''
+                        console.log(list);
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<tr>'+
+                                '<td>' + list[i].eventName + '</td>' +
+                                '<td>' + list[i].limitation + '</td>' +
+                                '<td>' + list[i].startTime + '</td>' +
+                                '<td>' + list[i].endTime + '</td>' ;
+
+								'</tr>';
+
+							}//end for
+                            $("#mytable tbody").empty().append(html);
+						} else {
+                        $("#mytable tbody").empty()
+						layer.msg("没有搜索到您要查看的信息");
+						}
+					},//end success
+					error:function(){
+						alert("哪儿出错了呢！");
+					}
+				});//end ajax
+	}
+	
+
+
+
+</script>
+
+</html>

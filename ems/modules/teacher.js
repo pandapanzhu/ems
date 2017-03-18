@@ -1,4 +1,4 @@
 const mongoose=require('mongoose');
-const TeacherShema=require('../models/teacherSchema');
-const Teachers=mongoose.model('teacher',TeacherShema);
+const TeacherSchema=require('../models/teacherSchema');
+const Teachers=mongoose.model('teacher',TeacherSchema);
 module.exports=Teachers;

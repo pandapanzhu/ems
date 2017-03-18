@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 
 process.env.TZ='Asia/Shanghai';
-
+//教师信息表
 const TeacherInfoShema=new mongoose.Schema({
     teacherId:String,
     IdCard:String,
@@ -39,7 +39,7 @@ const TeacherInfoShema=new mongoose.Schema({
     //每次执行save方法都会调用，时间更新操作
 TeacherInfoShema.pre('save',function(next){
 	if(this.isNew){
-		thiscreateAt=this.updateAt=Date.now();
+		this.createAt=this.updateAt=Date.now();
 	}else{
 		this.updateAt=Date.now();
 	}

@@ -4,7 +4,6 @@ process.env.TZ = "Asia/Shanghai";
 //申明一个mongoose对象
 var DepartmentSchema=new mongoose.Schema({
 	
-    departmentId:String,// 系ID
 	departmentName:String,//系名称
 	type:String,
 

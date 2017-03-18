@@ -5,9 +5,9 @@
 	<title>欢迎登录教务管理系统</title>
 
 	   <!-- Bootstrap Core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
-	<link href="bootstrap/css/bootstrapValidator.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css" />
+	<link href="/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet" type="text/css"/>
 	<style type="text/css">
 		.leftLabel {
             text-align: right;
@@ -68,15 +68,6 @@
 						<input type="radio" name="role" value="student" > 学生&nbsp;
 						<input type="radio" name="role" value="teacher"> 教师&nbsp;
 					</div>
-				<!-- 错误信息提示-->
-				<div class="form-group">
-					<label class="col-md-3"></label>
-					<div class="col-md-8">
-						<% if(title) {%>
-					<div> <%=title %> </div>
-						<% }%>
-				</div>
-				
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 leftLabel"></label>
@@ -91,6 +82,10 @@
 	</div>
 	</div>
 </div>
+<!-- 错误信息提示-->
+<input type="hidden" value="<%=title %>" id="hiddenMsg">
+
+
 <!-- jQuery -->
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
@@ -101,6 +96,12 @@
 
 <script type="text/javascript">
     $(function(){
+		//页面初始化
+		var msg=$("#hiddenMsg").val();
+		if(msg!=''){
+			parent.layer.msg(msg);
+		}
+
         $("#loginForm").bootstrapValidator({
             message: '信息有误',
             feedbackIcons: {

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>学生查看学生的详细信息</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+<!--<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">-->
+
+<style type="text/css">
+
+
+.btn-theme{
+	background:#5AB4F5;
+	font-weight:700 !important;
+	color:#fff;
+}
+.btn-theme-cancel{
+	background:#D9534F;
+	font-weight:700 !important;
+	color:#fff;
+}
+
+#showstudentId{
+	border: none;
+}
+input[type="file"]{
+	width:100px;
+}
+input[type="text"]{
+	width:90%;
+	min-width:120px;
+}
+.tdwidth{
+	min-width:120px;
+	max-width:150px;
+}
+.imgs{
+	width:150px;
+	height:190px;
+}
+
+
+</style>
+
+</head>
+
+<body>
+<div align="center" style=" margin-left:2%; margin-right:2%;">
+<form method="post" >
+<table class="table table-bordered">
+
+<tr>
+	<td class="tdwidth">学号：</td>
+	<td > <%=student.studentId%></td>
+	<td   class="tdwidth">身份证号：</td>
+	<td><%=student.IdCard%></td>
+	<td   class="tdwidth">电话号码：</td>
+	<td><input type="text" value="<%=student.phoneNo%>" name="phoneNo"> </td>
+	<!--学生个人照片-->
+	<%if(student.studentPhoto){%>
+	<td rowspan="5" style="width:180px;"  align="center" valign="middle"><img src="/uploadimages/students/<%=student.studentPhoto%>" class="imgs"></td>
+	<%}else{%>
+	<td rowspan="5" style="width:180px;" align="center" valign="middle"><img src="/images/default_head.jpg"  class="imgs"></td>
+	<%}%>
+	</tr>
+
+<tr>
+	<td>姓名：</td>
+	<td><%=student.name%></td>
+	<td>曾用名：</td>
+	<td><%=student.usedname%></td>
+	<td>性别：</td>
+	<td>
+		<% if(student.gender=='女'){%>
+		<input type="radio" name="gender" value="男"/>男
+		<input type="radio" name="gender" value="女" checked="checked" />女
+		 <%}%>
+
+		<% if(student.gender=='男'){%>
+		<input type="radio" name="gender" value="男" checked="checked" />男
+		<input type="radio" name="gender" value="女"/>女
+		 <%}%>
+	</td>
+</tr>
+
+<tr >
+	<td >出生年月：</td>
+	<td ><%=student.birthday%></td>
+	<td>来源高中：</td>
+	<td><%=student.originSchool%></td>
+	<td>政治面貌：</td>
+	<td><%=student.politicalLandscape%></td>
+</tr>
+
+<tr >
+	<td >父亲：</td>
+	<td ><%=student.fatherName%></td>
+	<td>父亲电话：</td>
+	<td><input type="text" value="<%=student.fatherPhone%>" name="fatherPhone"> </td>
+	<td>家庭住址：</td>
+	<td><%=student.familyAddress%></td>
+</tr>
+
+<tr >
+	<td >母亲：</td>
+	<td ><%=student.motherName%></td>
+	<td>母亲电话：</td>
+	<td><input type="text" value="<%=student.motherPhone%>" name="motherPhone"></td>
+	<td >家庭邮编：</td>
+	<td ><input type="text" value="<%=student.postCode%>" name="postCode"></td>
+	
+</tr>
+
+<tr >
+	<td >所属学院：</td>
+	<td ><%=student.faculty%></td>
+	<td> 所属系别：</td>
+	<td> <%=student.department%></td>
+	<td>所修专业：</td>
+	<td><%=student.major%></td>
+</tr>
+</tr>
+
+<tr >
+	<td>所属年级：</td>
+	<td><%=student.gradeId%></td>
+	<td >所属班级：</td>
+	<td ><%=student.classId%></td>
+	<td>考生号：</td>
+	<td><%=student.candidateNo%></td>
+	
+</tr>
+<tr>
+	<td>学制：</td>
+	<td><%=student.studyYear%></td>
+	<td>准考证号：</td>
+	<td><%=student.ticketNo%></td>
+	<td>学历层次：</td>
+	<td><%=student.education%></td>
+</tr>
+</table>
+
+<input type="button" class="btn btn-theme" value="修改" id="modify" style="margin-left: -95px;">
+
+</form>
+</div>
+
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function(){
+
+	$("#modify").click(function(){
+		$.ajax({
+			async:false,
+			data:$("form").serialize(),
+			type:'post',
+			dataType:'json',
+			url:'/student_person/ModifyMyDetail',
+			success:function(data){
+				if(data.msg=='success'){
+					parent.layer.msg("修改信息成功！");
+				}else parent.layer.msg("修改信息失败！");
+			},error:function(){
+				parent.layer.msg("出错了哦，请联系管理员！");
+			}
+		});//end ajax
+		location.reload();
+	})
+
+
+});
+
+
+
+</script>
+
+</body>
+
+</html>

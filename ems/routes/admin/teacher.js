@@ -1,8 +1,10 @@
-const teacher=require('../../modules/teacher');
+const Teacher=require('../../modules/teacher');
 const TeacherInfo=require('../../modules/teacherInfo');
+const Faculty=require('../../modules/faculty');
 const crypto=require('crypto');
 const utils=require('../util');
 const fs=require('fs');
+const PageInfo=require('../page')
 
 module.exports=function(app){
     //进入到显示列表信息的页面
@@ -12,15 +14,9 @@ module.exports=function(app){
 
     // 显示所有老师的列表信息异步加载
 	app.post('/admin_teacher/getTeacherInfo',function(req,res){
-		//CheckRole(req.session.user[0].role,'admin');
-		//当前页，每页数量，选择类型、名称
-		//page,size 初始时得到的不是数字，需要*1，将其转化为数字
-		var page=req.body.pageNum *1;
-		var size=req.body.pageSize *1;
+		//查询条件
 		var name=req.body.name;
 		var type=req.body.type;
-		var isFirstPage;
-		var isLastPage;
 		//默认查询出所有的信息
 		var query={dlt:0}
 		//条件查询
@@ -30,56 +26,34 @@ module.exports=function(app){
 			query={
 				dlt:0,
 				[type]:name
-		}
-		
+			}
 		}//end if
-		
-		var teacherinfos=TeacherInfo.find(query);
-			teacherinfos.sort({'meta.updateAt':-1});
-			teacherinfos.skip((page-1)*size);
-			teacherinfos.limit(size);
-			//此处可用where语句来限定条件，也可以直接调用query
-			/*if(query){
-				studentinfos.where(query);
-			}*/
-			teacherinfos.exec(function(err,data){
-				if (err) throw err; 
-				//data为当前页的数据
-				//计算查询到的数据总量
-				TeacherInfo.find(query,function(err,result){
-					if(page==1){
-						isFirstPage=true;
-					}
-					else{
-						isFirstPage=false;
-					}
-					//定义总页数，查询的条数除以每页的行数向上取整
-					var totalPage=Math.ceil(result.length/size);
-					//判断是否是最后一页
-					if(page==totalPage){
-						isLastPage=true;
-					}else{
-						isLastPage=false;
-					}
-					jsonArray={
-						list:data,
-						total:result.length,
-						pages:result.length/size,
-						pageSize:size,
-						pageNum:page,
-						isFirstPage:isFirstPage,
-						isLastPage:isLastPage
-					};
-                res.send(jsonArray);
-				})
-			})
+		PageInfo.getPages(req,query,TeacherInfo,res);
 	});
 
     //进入添加教师信息
     app.get('/admin_teacher/addTeacher',function(req,res){
-        res.render('admin/teacher/addTeacher');
+		Faculty.find({dlt:0},function(err,data){
+			if(err) throw err;
+			 res.render('admin/teacher/addTeacher',{faculty:data});
+		})
+       
     });
-    //添加教师信息
+	//添加教师基本信息
+	app.post('/admin_teacher/doAddTeacher',function(req,res,next){
+		const md5=crypto.createHash('md5');
+		password=md5.update(req.body.IdCard).digest('hex');
+		const teacher={
+			username:req.body.teacherId,
+			password:password,
+			name:req.body.name
+		}
+		Teacher.create(teacher,function(err,data){
+			if(err) throw err;
+		});
+		next();
+	});
+    //添加教师详细信息
     app.post('/admin_teacher/doAddTeacher',function(req,res){
 		var teacherid=req.body.teacherId;
 		var query=utils.getAllPostForm(req);
@@ -118,14 +92,15 @@ module.exports=function(app){
 	}
 		TeacherInfo.create(query,function(err,data){
 			if(err) throw err;
-			 res.redirect('/admin_teacher/showTeacherDetail/'+teacherid);
+			 res.redirect('/admin_teacher/showTeacherDetail/'+_id);
 		})
 	});
+	
 //显示详细信息
 app.get('/admin_teacher/showTeacherDetail/:id',function(req,res){
 	const teacherId=req.params.id;
-	const query={teacherId:teacherId};
-	TeacherInfo.find(query,function(err,data){
+	const query={_id:teacherId};
+	TeacherInfo.findOne(query,function(err,data){
 		if(err) throw err;
 		res.render("admin/teacher/showTeacherDetail",{
 			teacherInfo:data,
@@ -138,9 +113,9 @@ app.get('/admin_teacher/showTeacherDetail/:id',function(req,res){
 app.get('/admin_teacher/modifyTeacherInfo/:id',function(req,res){
 	const teacherId=req.params.id;
 	const query={
-		teacherId:teacherId
+		_id:teacherId
 	}
-	TeacherInfo.find(query,function(err,data){
+	TeacherInfo.findOne(query,function(err,data){
 		if(err)throw err;
 		res.render('admin/teacher/modifyTeacherInfo',{
 			teacherInfo:data

@@ -97,10 +97,13 @@
 		});
 
 		//每页显示多少条数据
-		$("#numsize").click(function(){
+		$("#numsize").change(function(){
 			var numsize=$("#numsize").val();
-			QueryTeacher(1,numsize,"","");
+			var condition=$("#condition").val();
+			var type=$("#selectType").val();
+			QueryTeacher(1,numsize,type,condition);
 		});
+
 
 		//查询学生信息
 		$("#query_btn").click(function(){
@@ -148,8 +151,8 @@
 								'<td>' + list[i].office + '</td>' +
 								
 								'<td class="col-md-1">'+
-								'<a href="javascript:;"  class="showTeacherDetail" data-id="'+list[i].teacherId+'">查看</a>&nbsp;|&nbsp;'+
-								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i].teacherId+'" class="deleteTeacher">删除</a></td>'+
+								'<a href="javascript:;"  class="showTeacherDetail" data-id="'+list[i]._id+'">查看</a>&nbsp;|&nbsp;'+
+								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i]._id+'" class="deleteTeacher">删除</a></td>'+
 								'</tr>';
 							}//end for
 						} else {

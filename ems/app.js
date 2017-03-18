@@ -23,11 +23,18 @@ var express = require('express')
   ,admin_class=require('./routes/admin/class')
   //管理员和校长对重要信息的管理
   ,admin_present=require('./routes/admin/present')
-  ;
+  ,admin_event=require('./routes/admin/event')
+  ,admin_course=require('./routes/admin/course')
+  ,admin_test=require('./routes/admin/test')
+  ,admin_performance=require('./routes/admin/performance');
+  
+  var student_person=require('./routes/student/person');
+  
 
 //实例化express 并赋值app变量
 var app = express();
 
+mongoose.Promise = require('bluebird');
 //连接本地数据库
 mongoose.connect('mongodb://127.0.0.1:27017/ems');
 
@@ -43,7 +50,7 @@ app.set('view engine','html');
 app.use(session({
   secret:'myems',
   key:'ems',
-  cookie:{maxAge:1000*60*60*24}
+  cookie:{maxAge:1000*60*30}
 }));
 
 
@@ -56,7 +63,7 @@ app.use(express.logger('dev'));
 //此为接受前台传入的数据-->纯文本
 //app.use(express.bodyParser());
 //要接受图片的话，应改为如下所示：
-app.use(express.bodyParser({uploadDir:'E:\\ems\\ems\\up\\temp\\'}));
+app.use(express.bodyParser({uploadDir:'E:\\ems\\ems\\temp\\'}));
 
 app.use(express.methodOverride());
 app.use(app.router);
@@ -72,6 +79,14 @@ admin_student(app);
 admin_teacher(app);
 admin_class(app);
 admin_present(app);
+admin_event(app);
+admin_course(app);
+admin_test(app);
+admin_performance(app);
+//============管理员操作结束========
+//============学生操作开始==========
+student_person(app);
+
 /*app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/login',routes.login);
