@@ -2,14 +2,13 @@
  * 个人信息的管理
  */
 
-//crypto是node.js中 让其生成散列值来加密密码
-const crypto=require('crypto');
 const Student=require('../../modules/student');
 const StudentInfo=require('../../modules/studentInfo');
 const Performance=require('../../modules/performance');
 const Test=require('../../modules/test');
 const util=require('../util');
 const EventInfo=require('../../modules/event');
+const Registration=require('../../modules/registration');
 
 
 
@@ -123,17 +122,108 @@ module.exports=function(app){
 			startTime:year
 		}
 		var sendData={}
-
+		var limits={}
 		//var user=req.session.user.username.substring(0,4);
 		StudentInfo.findOne({studentId:req.session.user.username},function(err,student){
 			if(err) throw err;
-			var grade=student.gradeId;
-			EventInfo.find({dlt:0},function(err,data){
+			var grade=student.gradeId;//查询出学生的年级,活动限制了年级，所以需要排除
+			EventInfo.find(query,function(err,data){//得到了未删除的活动
+				//将所有活动进行遍历，在活动中遍历后，再遍历是否为限制条件，如果为限制条件，则添加一个字段
+				for(var i in data){
+					var limit=data[i].limitation.split(",");
+					for(var j in limit){//限制遍历
+						if(grade==limit[j]){//确认为限制年级
+							limits[i]="1";//1代表被限制
+							continue;//循环结束
+						}else{
+							limits[i]="0";//0代表未被限制
+						}
+					}
+
+				}
+				sendData.limitation=limits
 				sendData.list=data;
-				
 				res.send(sendData);
 			})
 		})
 	});
+
+	/**
+	 * 学生活动报名流程
+	 */
+	app.post('/student_person/registEvent',function(req,res){
+		var id=req.body.id;//活动Id
+		var studentId=req.session.user.username;
+		var query={
+			eventId:id,
+			studentId:studentId,
+			dlt:0
+		}
+		Registration.findOne(query,function(err,data){
+			if (err) throw err;
+			if(data){
+				res.send({'msg':'error'});//查询出来，证明数据库存在，已经报名过了
+			}else{
+				Registration.create(query,function(err,data1){//如果注册成功，则表明报名成功了~
+					if(err) throw err;
+					res.send({'msg':'success'});
+				})
+			}
+		});// end findOne
+	})// end function
+
+
+	/**
+	 * 学生进入自己的活动页面
+	 */
+	app.get('/student_person/showMyEvent',function(req,res){		
+		var studentId=req.session.user.username;
+		var query={
+			studentId:studentId,
+			dlt:0
+		}
+		Registration.find(query,function(err,data){
+			if(err) throw err;
+			if(data.length!=0){//找到已经注册的活动了，但是需要对活动Id进行解析
+				res.render('student/showMyEvent',{'msg':'success',data:data});
+			}else{
+				res.render('student/showMyEvent',{'msg':'error',data:''});
+			}
+		});
+	});
+	
+	/**
+	 * 根据活动的Id,查询活动的信息
+	 */
+	app.post('/student_person/getEventById',function(req,res){
+		var id=req.body.id;
+		var query={
+			_id:id,
+			dlt:0
+		}
+		EventInfo.findOne(query,function(err,data){
+			if(err) throw err;
+			if(data!=null){
+				res.send({list:data});
+			}else{
+				res.send({list:''})//
+			}
+		})
+	});
+
+	/**
+	 * 进入查看自己的课表的页面
+	 */
+	app.get('/student_person/showMyArrangement',function(req,res){
+		res.render('student/showMyArrangement')
+	});
+	/**
+	 * 查看课表详情js
+	 */
+	app.post('/student_person/doShowMyArrangement',function(req,res){
+		var user= req.session.user;
+        var username=user.username;
+	})
+	 
 
 }

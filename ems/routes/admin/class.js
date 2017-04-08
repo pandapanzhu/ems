@@ -27,7 +27,9 @@ module.exports=function(app){
 				[type]:name
 			}
 		}//end if
-		PageInfo.getPages(req, query, ClassInfo,res);
+		PageInfo.getPages(req, query, ClassInfo,function(err,data){
+			res.send(data);
+		});
     });
 
 	/**

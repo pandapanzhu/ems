@@ -1,7 +1,7 @@
 //实现分页管理
 const studentInfo=require('../modules/studentInfo')
 
-module.exports.getPages = function (req, query,Mongos,res) {
+module.exports.getPages = function (req, query,Mongos,callback) {
 
 	//当前页，每页数量，选择类型、名称
 	//page,size 初始时得到的不是数字，需要*1，将其转化为数字
@@ -44,7 +44,8 @@ module.exports.getPages = function (req, query,Mongos,res) {
 				isFirstPage:isFirstPage,
 				isLastPage:isLastPage
 			};
-			res.send(jsonArray);
+			callback(null,jsonArray);
+			//res.send(jsonArray);
 		})
 	})
 

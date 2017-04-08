@@ -98,7 +98,9 @@ module.exports=function(app){
 			}
 		}//end if
 		//调用pageInfo中的getPages函数,传入四个参数
-		PageInfo.getPages(req,query, StudentInfo,res);
+		PageInfo.getPages(req,query, StudentInfo,function(err,data){
+            res.send(data);
+        });
 
 	});
 

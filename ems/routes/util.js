@@ -3,6 +3,7 @@ var crypto=require('crypto');
 //设置上传插件
 var formidable=require('formidable');
 var fs=require('fs');
+var ArrangeMent=require('../modules/arrangement');
 
 //取出__proto__字段
 module.exports.getAllPostForm=function (req){
@@ -72,6 +73,46 @@ module.exports.setFormidable=function(req,res,next){
 	next();
 
 }
+/**
+ * ===================排课部分=====================
+ */
+
+/**
+ * 解决教室的问题
+ */
+module.exports.RecursionForArrangeRoom=function(query,classroom,callback){
+	var i=Math.floor(Math.random()*classroom.length);//取一个随机数,因为0的关系，所以需要向下取整
+	query.classRoomId=classroom[i]._id
+	ArrangeMent.findOne(query,function(err,data){
+		if(data){
+			RecursionForArrangement(query);
+		}else{
+			callback("选择教室时失败",query);//返回一个query
+		}
+	})
+}
+
+/**
+ * 排课中，解决时间的问题
+ */
+module.exports.RecursionForArrangeTime=function(query,time,callback){
+	var i=Math.floor(Math.random()*4);//取一个随机数,因为0的关系，所以需要向下取整
+	var j=Math.floor(Math.random()*4);//取一个随机数,因为0的关系，所以需要向下取整
+	var times=time[i][j];
+	query.times=times;
+	console.log(times);
+	ArrangeMent.findOne(query,function(err,data){
+		if(data){
+			RecursionForArrangeTime(query);
+		}else{
+			callback("选择教室时失败",query);//返回一个query
+		}
+	})
+}
+
+/**
+ * ==============排课部分结束==============
+ */
 
 //登录管理
 module.exports.loginController=function(req,res){

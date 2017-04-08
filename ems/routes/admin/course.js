@@ -23,7 +23,9 @@ module.exports=function(app){
 				[type]:name
 			}
 		}//end if
-		PageInfo.getPages(req, query, CourseInfo,res);
+		PageInfo.getPages(req, query, CourseInfo,function(err,data){
+            res.send(data);
+        });
     });
     /**新建课程信息页面 */
     app.get('/admin_course/addCourse',function(req,res){

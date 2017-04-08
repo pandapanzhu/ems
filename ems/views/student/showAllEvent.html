@@ -91,24 +91,53 @@
 					url : "/student_person/getAllEvent",
 					success : function(data) {
                         var list=data.list;
+						var limits=data.limitation;
                         var html=''
-                        console.log(list);
 						if (list.length > 0) {
 							for (var i = 0; i < list.length; i++) {
 								html += '<tr>'+
                                 '<td>' + list[i].eventName + '</td>' +
                                 '<td>' + list[i].limitation + '</td>' +
                                 '<td>' + list[i].startTime + '</td>' +
-                                '<td>' + list[i].endTime + '</td>' ;
-
-								'</tr>';
-
+                                '<td>' + list[i].endTime + '</td>' 
+								if(limits[i]==0){
+									html+='<td><button class="btn btn-info" data-id="'+list[i]._id+'" style="padding:1px 8px;">报名</button></td>'
+								}else{
+									html+='<td></td>'
+								}
+								html+='</tr>';
 							}//end for
                             $("#mytable tbody").empty().append(html);
 						} else {
                         $("#mytable tbody").empty()
-						layer.msg("没有搜索到您要查看的信息");
+							layer.msg("没有搜索到您要查看的信息");
 						}
+
+						//活动报名事件
+						$(".btn-info").click(function(){
+							var id=$(this).data("id");
+							$.ajax({
+								data:{id:id},
+								type:'post',
+								dataType:'json',
+								url:'/student_person/registEvent',
+								success:function(data){
+									if(data.msg=="success"){
+										parent.layer.msg("报名成功！");
+										location.reload();
+									}else if(data.msg=="error"){
+										parent.layer.msg("您已经报名过了，请勿重复报名！");
+									}else{
+										parent.layer.msg("报名失败！");
+									}
+								},error:function(){
+									parent.layer.alert("出错了哦，请联系管理员！")
+								}
+							})
+						})
+
+
+
 					},//end success
 					error:function(){
 						alert("哪儿出错了呢！");

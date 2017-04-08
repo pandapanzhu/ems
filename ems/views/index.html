@@ -42,7 +42,7 @@
 				<ul class="yiji">
 					<%if(result.role=='admin'){%>
 					<!--如果角色为admin，则显示如下所示-->
-					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-glass"></span>个人信息管理 </a>
+					<li><a href="javascript:;" class="inactive"> <span class="glyphicon glyphicon-pencil"></span>个人信息管理 </a>
 						<ul style="display: none">
 							<li><a href="/admin_student/studentInfo"><span>O</span>学生信息管理</a></li>
 							<li><a href="/admin_teacher/getTeacher"><span>O</span>教师信息管理</a></li>
@@ -69,6 +69,8 @@
 					</a>
 						<ul style="display: none">
 						<li><a href="/admin_course/getCourse"><span>O</span>课程信息管理</a></li>
+						<li><a href="/admin_arrangement/getArrangement"><span>O</span>班级排课</a></li>
+						<li><a href="/admin_arrangement/showArrangementForClass"><span>O</span>查看课表</a></li>
 						</ul></li>
 
 					<li><a href="javascript:;" class="inactive"> <span
@@ -95,32 +97,55 @@
 					<!--如果登录信息是学生-->
 					<%}else if(result.role=='student'){%>
 					<li><a href="javascript:;" class="inactive"> 
-						<span class="glyphicon glyphicon-user"></span>个人信息管理
+						<span class="glyphicon glyphicon-pencil"></span>个人信息管理
 					</a>
 						<ul style="display: none">
-							<li><a  href="student_person/showMyDetail"><span>O</span>查看个人信息</a></li>
-							<li><a  href="student_person/showMyPerformance"><span>O</span>考试成绩</a></li>
-							<li><a  href="javascript:;"><span>O</span>个人课表</a></li>
-							<li><a  href="student_person/showMyTest"><span>O</span>学生考试查询</a></li>
+							<li><a  href="/student_person/showMyDetail"><span>O</span>查看个人信息</a></li>
+						</ul>
+					</li>
 
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-file"></span>我的课表
+					</a>
+						<ul style="display: none">
+							<li><a  href="/student_person/showMyArrangement"><span>O</span>个人课表</a></li>
 						</ul>
 					</li>
 					<li><a href="javascript:;" class="inactive"> 
-						<span class="glyphicon glyphicon-time"></span>活动管理
+						<span class="glyphicon glyphicon-tags"></span>我的考试
 					</a>
 						<ul style="display: none">
-							<li><a  href="student_person/showAllEvent"><span>O</span>活动报名</a></li>
-							<li><a href="student_person/showMyEvent"><span>O</span>我的活动</a></li>
+							<li><a  href="/student_person/showMyPerformance"><span>O</span>考试成绩</a></li>
+							<li><a  href="/student_person/showMyTest"><span>O</span>学生考试查询</a></li>
+						</ul>
+					</li>
+
+
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-flag"></span>活动管理
+					</a>
+						<ul style="display: none">
+							<li><a  href="/student_person/showAllEvent"><span>O</span>活动报名</a></li>
+							<li><a href="/student_person/showMyEvent"><span>O</span>我的活动</a></li>
 						</ul>
 					</li>
 					<%}else if(result.role=='teacher'){%>
 					<li><a href="javascript:;" class="inactive"> 
-						<span class="glyphicon glyphicon-user"></span>个人信息管理
+						<span class="glyphicon glyphicon-pencil"></span>个人信息管理
 					</a>
 						<ul style="display: none">
-							<li><a  href="teacher_person/showPerson"><span>O</span>查看个人信息</a></li>
+							<li><a  href="/teacher_control/showMyInfo"><span>O</span>查看个人信息</a></li>
 						</ul>
 					</li>
+
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-plus-sign"></span>学生成绩管理
+					</a>
+						<ul style="display: none">
+							<li><a  href="/teacher_control/MyStudentPerformance"><span>O</span>录入学生成绩</a></li>
+						</ul>
+					</li>
+					
 					<%}%>
 				</ul>
 			</div>

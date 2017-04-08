@@ -54,7 +54,9 @@ module.exports=function(app){
                         var id=courses[i]._id;
                         query.courseId=id;
                     }
-                    PageInfo.getPages(req, query, Test,res);
+                    PageInfo.getPages(req, query, Test,function(err,data){
+            res.send(data);
+        });
                 })
             }
         }//end else if
@@ -69,7 +71,9 @@ module.exports=function(app){
                 }
             }//end if
         }
-		PageInfo.getPages(req, query, Test,res);
+		PageInfo.getPages(req, query, Test,function(err,data){
+            res.send(data);
+        });
     });
 
     /**

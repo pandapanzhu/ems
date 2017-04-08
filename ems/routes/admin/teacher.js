@@ -28,7 +28,9 @@ module.exports=function(app){
 				[type]:name
 			}
 		}//end if
-		PageInfo.getPages(req,query,TeacherInfo,res);
+		PageInfo.getPages(req,query,TeacherInfo,function(err,data){
+            res.send(data);
+        });
 	});
 
     //进入添加教师信息
@@ -98,7 +100,7 @@ module.exports=function(app){
 	
 //显示详细信息
 app.get('/admin_teacher/showTeacherDetail/:id',function(req,res){
-	const teacherId=req.params.id;
+	const teacherId=req.params.id;//职工号
 	const query={_id:teacherId};
 	TeacherInfo.findOne(query,function(err,data){
 		if(err) throw err;
@@ -196,5 +198,27 @@ app.get('/admin_teacher/deleteTeacherInfo/:id',function(req,res){
 		res.redirect('/admin_teacher/getTeacher');
 	})
 });
+
+/**
+ * 重置密码
+ */
+app.post('/admin_teacher/initPass',function(req,res){
+	const md5=crypto.createHash('md5');
+	var id=req.body.id;
+	var query={
+		username:id,
+		dlt:0
+	}
+	var password=md5.update(id).digest('hex');
+	Teacher.update(query,{$set:{password:password,updateAt:Date.now()}},function(err,data){
+		if(err) throw err;
+		if(data.nModified>0){
+			res.send({msg:'success'});
+		}else{
+			res.send({msg:'error'});
+		}
+	})
+
+})
 
 }

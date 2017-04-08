@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>查看我的活动信息</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+    .title{margin-top: 25px;}
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+	</div>
+</div>
+
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th>活动名称</th>	
+			<th>起始时间</th>
+			<th>结束时间</th>
+			<th style="min-width:100px;">状态</th>
+		</tr>
+	</thead>
+	    <tbody>
+        </tbody>
+	</table>
+
+<div id="hiddenInput" >
+	<% for(var i in data){%>
+	<input class="hiddenEvent" type="hidden" value="<%=data[i].eventId%>" data-id="<%=data[i].payment%>">
+	<%}%>
+
+</div>
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+        var msg="<%=msg%>";
+        if(msg=="error"){
+            parent.layer.msg('暂时没有活动信息哦，先去报名吧！')
+        }else{
+			var html=''
+			$(".hiddenEvent").each(function(){
+				var eventId=$(this).val();
+				$.ajax({//根据活动Id,获取活动信息
+					data:{id:eventId},
+					async:false,
+					type:'post',
+					dataType:'json',
+					url:'/student_person/getEventById',
+					success:function(data){
+						var event=data.list;
+						html+='<tr><td>'+event.eventName+'</td><td>'+event.startTime+'</td><td>'+event.endTime+'</td>'
+					},error:function(){
+						parent.layer.msg("出错了哦，请联系管理员！")
+					}
+				})//end ajax
+
+				var payment=$(this).data("id");
+				if(payment==0){
+					html+='<td>未支付活动费用</td></tr>'
+				}else{
+					html+='<td>已支付活动费用</td></tr>'
+				}				
+			})//end each
+			$("#mytable tbody").empty().append(html);
+		}
+    })
+</script>
+
+</html>

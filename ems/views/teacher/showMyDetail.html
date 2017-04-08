@@ -36,30 +36,27 @@ input[type="text"]{
 	width:150px;
 	height:190px;
 }
-#initPass{
-	margin-left: 25%;
-    padding: 2px 11px;
-}
+
 </style>
 
 </head>
 
 <body>
 <div align="center" style=" margin-left:2%; margin-right:2%;">
-<form action="/admin_teacher/doModifyTeacherInfo" method="post" enctype="multipart/form-data">
+<form action="/teacher_control/doModifyteacher" method="post" enctype="multipart/form-data">
 <table class="table table-bordered">
 
 <tr>
 	<td class="tdwidth">职工号：</td>
-    <td ><input id="showteacherId" type="text" name="teacherId" value="<%=teacherInfo.teacherId%>" readonly /></td>
+    <td> <%=teacher.teacherId %> </td>
 	<td   class="tdwidth">身份证号：</td>
-	<td><input type="text" name="IdCard" value="<%=teacherInfo.IdCard%>"/></td>
+	<td><%=teacher.IdCard%></td>
 	<td   class="tdwidth">电话号码：</td>
-    <td><input type="text" name="phoneNo" value="<%=teacherInfo.phoneNo%>"/></td>
+    <td><input type="text" name="phoneNo" value="<%=teacher.phoneNo%>"/></td>
 	<!--教师证件照照片-->
-	<%if(teacherInfo.teacherPhoto){%>
+	<%if(teacher.teacherPhoto){%>
 	<td rowspan="5" style="width:180px;" align="center" valign="middle">
-        <img src="../../uploadimages/teachers/<%=teacherInfo.teacherPhoto%>" class="imgs">请选择照片！
+        <img src="../../uploadimages/teachers/<%=teacher.teacherPhoto%>" class="imgs">请选择照片！
     </td>
 	<%}else{%>
 	<td rowspan="5" style="width:180px;" align="center" valign="middle">
@@ -71,17 +68,17 @@ input[type="text"]{
 
 <tr>
 	<td>姓名：</td>
-    <td><input type="text" name="name" value="<%=teacherInfo.name%>"/></td>
+    <td><%=teacher.name%></td>
 	<td>曾用名：</td>
-    <td><input type="text" name="usedname" value="<%=teacherInfo.usedname%>"/></td>
+    <td><input type="text" name="usedname" value="<%=teacher.usedname%>"/></td>
 	<td>性别：</td>
 	<td>
-		<% if(teacherInfo.gender=='女'){%>
+		<% if(teacher.gender=='女'){%>
 		<input type="radio" name="gender" value="男"/>男
 		<input type="radio" name="gender" value="女" checked="checked" />女
 		 <%}%>
 
-		<% if(teacherInfo.gender=='男'){%>
+		<% if(teacher.gender=='男'){%>
 		<input type="radio" name="gender" value="男" checked="checked" />男
 		<input type="radio" name="gender" value="女"/>女
 		 <%}%>
@@ -96,48 +93,48 @@ input[type="text"]{
 		<select id="day" style="width:24%;"></select>
 	</td>
 	<td> 民族：</td>
-    <td><input type="text" name="national" value="<%=teacherInfo.national%>"/></td>
+    <td><input type="text" name="national" value="<%=teacher.national%>"/></td>
 	<td>政治面貌：</td>
-    <td><input type="text" name="politicalLandscape" value="<%=teacherInfo.politicalLandscape%>"/></td>
+    <td><input type="text" name="politicalLandscape" value="<%=teacher.politicalLandscape%>"/></td>
 </tr>
 
 <tr >
 	<td >邮箱：</td>
-    <td><input type="text" name="e_mail" value="<%=teacherInfo.e_mail%>"/></td>
+    <td><input type="text" name="e_mail" value="<%=teacher.e_mail%>"/></td>
 	<td>学历：</td>
-    <td><input type="text" name="education" value="<%=teacherInfo.education%>"/></td>
+    <td><input type="text" name="education" value="<%=teacher.education%>"/></td>
 	<td>学位：</td>
-    <td><input type="text" name="degree" value="<%=teacherInfo.degree%>"/></td>
+    <td><input type="text" name="degree" value="<%=teacher.degree%>"/></td>
 </tr>
 <tr >
 	<td>毕业院校：</td>
-    <td><input type="text" name="originSchool" value="<%=teacherInfo.originSchool%>"/></td>
+    <td><input type="text" name="originSchool" value="<%=teacher.originSchool%>"/></td>
 	<td >职务：</td>
-    <td><input type="text" name="office" value="<%=teacherInfo.office%>"/></td>
+    <td><input type="text" name="office" value="<%=teacher.office%>"/></td>
 	<td>职称：</td>
-    <td><input type="text" name="title" value="<%=teacherInfo.title%>"/></td>
+    <td><input type="text" name="title" value="<%=teacher.title%>"/></td>
 </tr>
 <tr >
 	<td >所属学院：</td>
-    <td><input type="text" name="faculty" value="<%=teacherInfo.faculty%>"/></td>
+    <td><input type="text" name="faculty" value="<%=teacher.faculty%>"/></td>
 	<td>学科方向：</td>
-    <td><input type="text" name="direction" value="<%=teacherInfo.direction%>"/></td>
+    <td><input type="text" name="direction" value="<%=teacher.direction%>"/></td>
 	<td>主修方向：</td>
-    <td><input type="text" name="major" value="<%=teacherInfo.major%>"/></td>
+    <td><input type="text" name="major" value="<%=teacher.major%>"/></td>
     <td> <input type="file" name="teacherphoto" style="width:100%;" >
 </tr>
 </tr>
 
 <tr>
 	<td>教师资格证：</td>
-    <td><input type="text" name="teacherNo" value="<%=teacherInfo.teacherNo%>"/></td>
+    <td><input type="text" name="teacherNo" value="<%=teacher.teacherNo%>"/></td>
 	<td>人事职工号：</td>
-    <td><input type="text" name="employeeNo" value="<%=teacherInfo.employeeNo%>"/></td>
+    <td><input type="text" name="employeeNo" value="<%=teacher.employeeNo%>"/></td>
 	<td>实验室人员：</td>
 	<td>
         <select name="labMan" id="selectLab" style="width:90%">
         
-	<% if(teacherInfo.labMan==true){ %>
+	<% if(teacher.labMan==true){ %>
 	<option value=true>是</option>
     <option value=false>否</option>
 	<% }else{%>
@@ -145,31 +142,31 @@ input[type="text"]{
     <option value=true>是</option>
 	<%}%>
 	</td>
-	<td><button type="button" id="initPass" class="btn btn-info">重置密码</button> </td>
 </tr>
-<!--<tr>
-	<td> 所属系别：</td>
-	<td> <%=teacherInfo.department%> </td>
-</tr>-->
+
 </table>
 
-<input type="submit" class="btn btn-theme" value="保存" id="modify" >
-<input type="button" class="btn btn-theme-cancel" value="返回" id="back">
+<input type="submit" class="btn btn-theme" value="修改" id="modify" >
 
 </form>
 </div>
 
-<input type="hidden" id="getBirthday" value="<%=teacherInfo.birthday%>">
-<input type="hidden" id="hiddenId" value="<%=teacherInfo._id%>">
+<input type="hidden" id="getBirthday" value="<%=teacher.birthday%>">
+<input type="hidden" id="hiddenMsg" value="<%=msg%>">
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/javascripts/web/date.js"></script>
 <script type="text/javascript">
 
+$(function(){
+addBirthday();
 
-
-
+var msg=$("#hiddenMsg").val();
+	if(msg!=""){
+		parent.layer.msg(msg);
+	}
+})
 
 function addBirthday(){
 	var getBirthday=$("#getBirthday").val();
@@ -216,35 +213,13 @@ function selectChange(){
 }
 
 $(function(){
-	//页面初始化
-	addBirthday();
-
-	//重置密码
-	$("#initPass").click(function(){
-		var teacherId=$("#showteacherId").val();
-		$.ajax({
-			data:{id:teacherId},
-			type:'post',
-			dataType:'json',
-			url:'/admin_teacher/initPass',
-			success:function(data){
-				var msg=data.msg
-				if(msg=="success"){
-					parent.layer.msg("重置密码成功，初始密码与职工号一致");
-				}else if(msg=='error'){
-					parent.layer.msg("系统错误！请联系管理员~");
-				}
-			},error:function(){
-				parent.layer.msg("系统错误！请联系管理员~");
-			}
-		})
-	})
 	$("#year").change(function(){
 		 selectChange();
 	});
 	$("#month").change(function(){
 		 selectChange();
 	});
+	
 	// before submit
 	$("form").submit(function(){
 		var year=$("#year").val();
@@ -254,10 +229,6 @@ $(function(){
 		$("#selectBir").append(html);
 	});
 
-	$("#back").click(function(){
-		var teacherId=$("#hiddenId").val();
-		location.href="/admin_teacher/showTeacherDetail/"+teacherId;
-	});
 })
 
 

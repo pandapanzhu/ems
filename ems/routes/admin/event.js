@@ -22,7 +22,9 @@ module.exports=function(app){
 				[type]:name
 			}
 		}//end if
-		PageInfo.getPages(req, query, EventInfo,res);
+		PageInfo.getPages(req, query, EventInfo,function(err,data){
+            res.send(data);
+        });
     });
     /**进入增加活动信息页面 */
     app.get('/admin_event/addEvent',function(req,res){
@@ -96,6 +98,8 @@ module.exports=function(app){
 				[type]:name
 			}
 		}//end if
-		PageInfo.getPages(req, query, Registration,res);
+		PageInfo.getPages(req, query, Registration,function(err,data){
+            res.send(data);
+        });
     }); 
 }

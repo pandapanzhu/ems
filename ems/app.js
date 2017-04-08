@@ -26,15 +26,17 @@ var express = require('express')
   ,admin_event=require('./routes/admin/event')
   ,admin_course=require('./routes/admin/course')
   ,admin_test=require('./routes/admin/test')
-  ,admin_performance=require('./routes/admin/performance');
+  ,admin_performance=require('./routes/admin/performance')
+  ,admin_arrangement=require('./routes/admin/arrangement');
   
   var student_person=require('./routes/student/person');
+
+  var teacher_control=require('./routes/teacher/teacher');
   
 
 //实例化express 并赋值app变量
 var app = express();
 
-mongoose.Promise = require('bluebird');
 //连接本地数据库
 mongoose.connect('mongodb://127.0.0.1:27017/ems');
 
@@ -83,9 +85,14 @@ admin_event(app);
 admin_course(app);
 admin_test(app);
 admin_performance(app);
+admin_arrangement(app);
 //============管理员操作结束========
 //============学生操作开始==========
 student_person(app);
+//===========学生操作结束==========
+//===========教师操作开始==========
+teacher_control(app);
+//===========教师操作结束==========
 
 /*app.get('/', routes.index);
 app.get('/users', user.list);

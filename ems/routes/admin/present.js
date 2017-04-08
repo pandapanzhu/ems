@@ -87,7 +87,9 @@ module.exports=function(app){
 				[type]:name
 		}
 		}//end if
-		PageInfo.getPages(req, query, Faculty,res);
+		PageInfo.getPages(req, query, Faculty,function(err,data){
+            res.send(data);
+        });
     });
 
     //删除学院,异步操作
@@ -142,7 +144,9 @@ module.exports=function(app){
                 facultyName:facultyName
 		    }
 		}//end if
-	PageInfo.getPages(req,query, Major,res);
+	PageInfo.getPages(req,query, Major,function(err,data){
+            res.send(data);
+        });
 
     });
 
@@ -226,7 +230,9 @@ module.exports=function(app){
 				building:name
 		    }
         }
-	PageInfo.getPages(req,query, Classroom,res);
+	PageInfo.getPages(req,query, Classroom,function(err,data){
+            res.send(data);
+        });
     });
 
     //进入添加教室信息页面
