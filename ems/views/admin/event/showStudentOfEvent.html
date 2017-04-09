@@ -51,6 +51,8 @@
 		<tr>
 			<th>学号</th>	
 			<th>姓名</th>
+			<th>学院</th>
+			<th>班级</th>
 			<th>是否缴费</th>
 			<!--<th colspan="2" style="min-width:100px;">操作</th>-->
 		</tr>
@@ -62,9 +64,9 @@
 			<div class="selectbtn">
 				每页显示
 				<select name="numsize" id="numsize">
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
 					</select>
 					条,共<label style="color: #85D9C8" id="total">0</label>	条
 			</div>
@@ -104,7 +106,7 @@
         });
 
 	    //页面初始化
-	    QueryStudentOfEvent(1,2,"","");
+	    QueryStudentOfEvent(1,5,"","");
 	});
 	
 	//动态添加页面，并实现分页
@@ -132,11 +134,27 @@
                                 if(list[i].payment==true)paies='是';
                                 else paies='否'
                                 //页面异步加载中
-								html += '<tr>' + 
-								'<td>' + list[i].studentId + '</td>' +
-								'<td>' + list[i].studentName + '</td>' +
-								'<td>' + paies + '</td>' +
-								'</tr>';
+								
+								$.ajax({
+									data:{studentId:list[i].studentId,dlt:0},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_event/getStudentByStudenIdt',
+									success:function(data){
+										var msg=data.msg
+										if(msg=='error'){
+											parent.layer.msg('加载学生信息时出错');
+										}else{
+											var student=data.list;
+											html += '<tr><td>' + student.studentId + '</td>' 
+												 +'<td>'+student.name+'</td>'
+												 +'<td>' + student.faculty + '</td>' 
+												 +'<td>'+student.gradeId+'级'+student.major+student.classId+'班</td>'
+										}
+									}
+								})
+								html+='<td>' + paies + '</td></tr>';
 							}//end for
 						} else {
 						layer.msg("没有搜索到您要查看的信息");

@@ -9,17 +9,6 @@
 	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
 	<style type="text/css">
-		body{background:#F8F8F8;}
-		.show{border:1px solid red;}
-		.title{background:#fff;margin-top:25px;height:54px;border:1px solid #E7EBEB;position:relative;}
-		.title .c_search{margin:10px 0 10px 25px;line-height:30px;width:600px;float:left;}
-		.c_search div{float:left;margin-left:3px;}
-		.c_search form-control{border-color:#EFEFEF;}
-		.c_search div select{width: 150px; height: 34px;}
-		.c_search .btn{background:#5AB4F5;cursor:pointer;font-weight:700;color:#fff;width:60px;}
-		.title .c_new{width:100px;height:30px;float:right;margin:10px 50px 10px 10px;}
-		.title .c_new .btn{background:#5AB4F5;font-weight:700;color:#fff;}
-		.mytable{text-align: center;}
 
 	</style>
 </head>
@@ -63,9 +52,9 @@
 			<div class="selectbtn">
 				每页显示
 				<select name="numsize" id="numsize">
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
 					</select>
 					条,共<label style="color: #85D9C8" id="total">0</label>	条
 			</div>
@@ -82,7 +71,7 @@
 <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	//页面初始化
-	QueryFaculty(1,2,"","");
+	QueryFaculty(1,5,"","");
 
 	$(function(){
 

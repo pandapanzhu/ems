@@ -9,6 +9,8 @@ const Test=require('../../modules/test');
 const util=require('../util');
 const EventInfo=require('../../modules/event');
 const Registration=require('../../modules/registration');
+const ClassInfo=require('../../modules/classInfo');
+const Arrangement=require('../../modules/arrangement');
 
 
 
@@ -222,7 +224,44 @@ module.exports=function(app){
 	 */
 	app.post('/student_person/doShowMyArrangement',function(req,res){
 		var user= req.session.user;
-        var username=user.username;
+        var username=user.username;//获取学号
+		//根据学号，获取班级信息
+		StudentInfo.findOne({studentId:username,dlt:0},function(err,student){
+			if(err) throw err;
+			var query={
+				facultyName:student.faculty,
+				majorName:student.major,
+				gradeId:student.gradeId,
+				classId:student.classId,
+				dlt:0
+			}
+			console.log(query);
+			if(student==null)res.send({'msg':'error'});
+			else{
+			ClassInfo.findOne(query,function(err,classs){
+				if(err) throw err;
+				if(classs==null)res.send({'msg':'error'});
+				else{
+				var classQuery={term:req.body.term,years:req.body.years,classId:classs._id,dlt:0}
+				Arrangement.find(classQuery,function(err,arrangement){
+					if(err) throw err;
+					res.send({
+						list:arrangement,
+						'msg':'success',
+						title:{
+							years:req.body.years,
+							term:req.body.term,
+							facultyName:student.faculty,
+							grade:student.gradeId,
+							majorName:student.major,
+							classNames:student.classId
+						}
+					});
+				})
+				}
+			})
+			}
+		})
 	})
 	 
 

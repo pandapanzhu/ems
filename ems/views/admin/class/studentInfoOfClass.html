@@ -9,26 +9,28 @@
 	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
 	<style type="text/css">
-		body{background:#F8F8F8;}
-		.show{border:1px solid red;}
-		.title{background:#fff;margin-top:25px;height:54px;border:1px solid #E7EBEB;position:relative;}
-		.title .c_search{margin:10px 0 10px 25px;line-height:30px;width:600px;float:left;}
-		.c_search div{float:left;margin-left:3px;}
-		.c_search form-control{border-color:#EFEFEF;}
-		.c_search div select{width: 150px; height: 34px;}
-		.c_search .btn{background:#5AB4F5;cursor:pointer;font-weight:700;color:#fff;width:60px;}
-		.mytable{text-align: center;}
-
+	caption{
+		text-align: center;
+		font-size: 20px;
+		font-weight: 700;
+		margin-top:20px;
+	}
 	</style>
 </head>
 <body>
+	
 	<table class="table table-hover span12" id="mytable">
+		<caption></caption>
 	<thead>
 		<tr>
 			<th>学号</th>	
 			<th>姓名</th>
 			<th>性别</th>
+			<th>身份证</th>
+			<th>出生日期</th>
+			<th>政治面貌</th>
 			<th>家庭住址</th>
+			<th>操作</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -47,61 +49,73 @@
 	$(function(){
 
 	//页面初始化
-	var classId=$("#classId").val();
-	// QueryStudent(1,2,"classId",classId);
+	QueryStudent($("#classId").val());
 
 	//动态添加页面，并实现分页
-	function QueryStudent(type,condition) {
-
-		var sendData = {
-			name : condition,
-			type:type,
-			classId:classId
-		}
+	function QueryStudent(classId) {
 		$.ajax({
-					type : "post",
-					data : sendData,
-					dataType : "json",
-					url : "/admin_class/getStudentInfo",
-					success : function(data) {
-						$("#total").html(data.total);
-						var html = "";
-						var list = data.list;
-						
-						if (list.length > 0) {
-							for (var i = 0; i < list.length; i++) {
-								html += '<tr>' + 
-								'<td>' + list[i].studentId + '</td>' +
-								'<td>' + list[i].name + '</td>' +
-								'<td>' + list[i].gender + '</td>' +
-								'<td>' + list[i].department + '</td>' +
-								'<td>' + list[i].gradeId + '</td>' +
-								'<td>' + list[i].major + '</td>' +
-								'<td>' + list[i].classId + '</td>' +
-								'<td class="col-md-1">'+
-								'<a href="javascript:;"  class="showStudentDetail" data-id="'+list[i].studentId+'">查看</a>&nbsp;|&nbsp;'+
-								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i].studentId+'" class="deleteStudent">删除</a></td>'+
-								'</tr>';
-							}//end for
-						} else {
-						layer.msg("没有搜索到您要查看的信息");
+			type : "post",
+			data : {classId:classId},
+			dataType : "json",
+			url : "/admin_class/getStudentInfoByClass",
+			success : function(data) {
+				var html = "";
+				var list = data.list;
+				if (list.length > 0) {
+					var classes=data.classes;
+					var html2='<div>'+classes.facultyName+classes.gradeId+'级'+classes.majorName+classes.classId+'班'
+					for (var i = 0; i < list.length; i++) {
+						html += '<tr>' + 
+						'<td>' + list[i].studentId + '</td>' +
+						'<td>' + list[i].name + '</td>' +
+						'<td>' + list[i].gender + '</td>' +
+						'<td>' + list[i].IdCard + '</td>' +
+						'<td>' + list[i].birthday + '</td>' +
+						'<td>' + list[i].politicalLandscape + '</td>' +
+						'<td>' + list[i].familyAddress + '</td>' +
+						'<td class="col-md-1">'+
+						'<a href="javascript:;"  class="showStudentDetail" data-id="'+list[i].studentId+'">详情</a>&nbsp;|&nbsp;'+
+						'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i].studentId+'" class="deleteStudent">删除</a></td>'+
+						'</tr>';
+					}//end for
+					$("caption").empty().append(html2);
+				} else {
+				layer.msg("没有搜索到您要查看的信息");
+				}
+				$("#mytable tbody").empty().append(html);
+
+				//显示学生详细信息
+				$(".showStudentDetail").click(function(){
+					var id=$(this).data("id");
+					location.href="/admin_class/showStudentDetail/"+id;
+				});
+
+				//删除学生信息
+				$(".deleteStudent").click(function(){
+					var id=$(this).data("id");
+					$.ajax({
+						data:{id:id},
+						type:'post',
+						dataType:'json',
+						url:'/admin_class/deleteStudent',
+						success:function(data){
+							var msg=data.msg;
+							if(msg=='success'){
+								parent.layer.msg('删除成功');
+								location.reload();
+							}
 						}
-						$("#mytable tbody").empty().append(html);
-
-						//显示学生详细信息
-						$(".showStudentDetail").click(function(){
-							var id=$(this).data("id");
-							location.href="/admin_student/showStudentDetail/"+id;
-						});
+					})
+				})
 
 
-					},//end success
-					error:function(){
-						alert("哪儿出错了呢！");
-					}
-				});//end ajax
-		}
-	});
+			},//end success
+			error:function(){
+				alert("哪儿出错了呢！");
+			}
+		});//end ajax
+	}
+});
 	
 
 

@@ -6,6 +6,7 @@ const Faculty=require('../../modules/faculty');
 const Major=require('../../modules/major');
 const TeacherInfo=require('../../modules/teacherInfo');
 const StudentInfo=require('../../modules/studentInfo');
+const Student=require('../../modules/student');
 
 module.exports=function(app){
     //进入查看班级页面
@@ -139,17 +140,47 @@ module.exports=function(app){
 		}
 		ClassInfo.findOne(queryClass,function(err,data){
 			if(err)throw err;
-			const queryStudent={
-				facultyName:data.facultyName,
-				majorName:data.majorName,
-				gradeId:data.gradeId,
-				classId:data.classId
-			}
-			StudentInfo.find(queryStudent,function(err,result){
-				console.log(result);
-			})
 			res.render('admin/class/studentInfoOfClass',{hiddenId:classId});
 		})
-		// StudentInfo.find(query,)
+	});
+	app.post('/admin_class/getStudentInfoByClass',function(req,res){
+		const id=req.body.classId;
+		ClassInfo.findOne({_id:id,dlt:0},function(err,classes){
+			if(err) throw err;
+			var studentQuery={
+				faculty:classes.facultyName,
+				major:classes.majorName,
+				gradeId:classes.gradeId,
+				classId:classes.classId,
+				dlt:0
+			}
+			StudentInfo.find(studentQuery).sort({'studentId':1}).exec(function(err,student){
+				if(err) throw err;
+				res.send({list:student,classes:classes})
+			})
+		})
+	});
+
+	/**
+	 * 查看学生的详细信息
+	 */
+	app.get('/admin_class/showStudentDetail/:id',function(req,res){
+		StudentInfo.findOne({studentId:req.params.id,dlt:0},function(err,data){
+			if(err)throw err;
+			res.render('admin/class/showStudentDetails',{student:data});
+		})
+	});
+	/**
+	 * 删除学生信息
+	 */
+	app.post('/admin_class/deleteStudent',function(req,res){
+		var id=req.body.id;
+		Student.findOneAndRemove({username:id,dlt:0},function(err,data){
+			if(err) throw err;
+			StudentInfo.findOneAndRemove({studentId:id,dlt:0},function(err,data){
+				if(err) throw err;
+				res.send({'msg':'success'})
+			})
+		})
 	})
 }//end js

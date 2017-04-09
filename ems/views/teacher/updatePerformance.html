@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>添加学生成绩</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+    #buttons{
+        margin-top:30px;
+        margin-bottom: 20px;
+    }
+    .btn{
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    table,th{
+        text-align: center;
+    }
+    p{
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+    }
+	</style>
+</head>
+<body>
+	<div class="container">
+        <div class="row">
+            <div class="col-md-12" id="buttons">
+                <p><%=arrangement.years%>学年 第<%=arrangement.term%>学期</p>
+                <p class="showCourseName"></p>
+                <div class="col-md-3 col-md-offset-9">
+                    <button class="btn btn-theme" id="saveChanges">保存</button>
+                    <button class="btn btn-theme-cancel" id="back">返回</button>
+                </div>
+            </div>
+	
+	<table class="table table-hover" id="mytable">
+	<thead>
+		<tr>
+			<th class="col-md-2">学号</th>	
+			<th class="col-md-2">姓名</th>
+            <th class="col-md-2">学院</th>
+			<th class="col-md-3">班级</th>
+			<th class="col-md-1">分数</th>
+		</tr>
+	</thead>
+	<tbody>
+        <%for(var i in student){%>
+        <tr>
+        <td><%=student[i].studentId%></td>
+        <td><%=student[i].name%></td>
+        <td><%=student[i].faculty%></td>
+        <td><%=student[i].gradeId%>级<%=student[i].major%><%=student[i].classId%>班</td>
+        <td>
+            <%if(performance.length>0){
+                for(var j in performance){
+                    if(performance[j].studentId==student[i]._id){%>
+                        <!--id相同证明已经在数据库存在了-->
+                        <%=performance[j].results%>
+                    <%}else{%>
+                    <input class="form-control update" type="text" data-id="<%=student[i]._id%>">
+                    <%}
+                }
+            }else{%>
+                <input class="form-control update" type="text" data-id="<%=student[i]._id%>" >
+            <%}%>
+            </td>
+        <tr>
+        <%}%>
+            
+
+    </tbody>
+	</table>
+        </div>
+    </div>
+</body>
+<input type="hidden" id="hiddenMsg" value="<%=msg%>">
+<input type="hidden" id="hiddenCourseId" value="<%=arrangement.courseId%>">
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    var msg=$("hiddenMsg").val();
+    if(msg=='error'){
+        parent.layer.confirm("查询信息出错，是否继续？")}
+    }
+    $.ajax({
+        data:{course:$("#hiddenCourseId").val()},
+        type:'post',
+        dataType:'json',
+        url:'/teacher_control/getCourseById',
+        success:function(data){
+            var courseName=data.course.courseName
+            $(".showCourseName").empty().append(courseName);
+        }
+    })
+
+    $("#back").click(function(){
+        history.back(-1);
+    });
+    $("#saveChanges").click(function(){
+        $(".update").each(function(){
+            var result=$(this).val();
+            if(result=="" || result%1!=0){
+                return false;
+            }else{
+                var studentid=$(this).data("id");
+                var sendData={
+                    years:"<%=arrangement.years%>",
+                    term:"<%=arrangement.term%>",
+                    results:result,
+                    studentId:$(this).data("id")+"",
+                    courseId:"<%=arrangement.courseId%>"
+                }
+                $.ajax({
+                    data:sendData,
+                    type:'post',
+                    dataType:'json',
+                    url:'/teacher_control/doUpdatePerformance',
+                    success:function(data){
+                        var msg=data.msg
+                        if(msg=='error'){
+                            parent.layer.alert("保存失败，请稍后再试");
+                        }else{
+                            parent.layer.alert("保存成功");
+                            location.reload();
+                        }
+                    }
+                })
+            }
+            
+        })
+    })
+
+})
+</script>
+
+</html>

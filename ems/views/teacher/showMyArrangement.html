@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>学生查看课表界面</title>
+	<title>教师查看课表界面</title>
 	<meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
@@ -87,7 +87,7 @@ $(function(){
                 data:data,
                 type:'post',
                 dataType:'json',
-                url:'/student_person/doShowMyArrangement',
+                url:'/teacher_control/doShowMyArrangement',
                 success:function(data){
                     var list=data.list;
                     if(list.length!=0){//如果存在排课数据
@@ -96,7 +96,7 @@ $(function(){
                         //===============生成课程的表格=============
                         //==================标题===================
                         html1=title.years+'学年第'+title.term+'学期<br>'
-                             +title.facultyName+title.grade+'级'+title.majorName+title.classNames+'班'
+                             +title.teacherName+'的课表'
                         $("table caption").empty().append(html1);
                         //=================th=====================
                          html2='<th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th>'
@@ -147,15 +147,10 @@ $(function(){
                            })
                         }
                     }else{
-                        if(data.msg=='error'){
-                            parent.layer.msg("没有查询到班级信息");
-                        }else{
-                            $("table caption").empty();
-                            $("table thead").empty();
-                            $("table tbody").empty();
-                            parent.layer.msg("没有查询到排课信息")
-                        }
-                        
+                        $("table caption").empty();
+                        $("table thead").empty();
+                        $("table tbody").empty();
+                        parent.layer.msg("没有查询到排课信息")
                     }
                 },error:function(){
                     parent.layer.msg("系统错误，请联系管理员！");

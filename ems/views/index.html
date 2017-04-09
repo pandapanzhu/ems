@@ -19,7 +19,15 @@
 		</div>
 		<div class="msg">
 			<div class="show">
-				<span> 欢迎您，<%=result.role %> : <%= result.name %> </span>
+				<span> 欢迎您，
+					<%if(result.role=='admin'){%>
+						管理员
+					<%}else if(result.role=='teacher'){%>
+						教师
+					<%}else if(result.role=='student'){%>
+						学生
+					<%} %>
+					: <%= result.name %> </span>
 			</div>
 			<div class="ctr">
 				<button class="btn1" id="changePsw">
@@ -145,6 +153,15 @@
 							<li><a  href="/teacher_control/MyStudentPerformance"><span>O</span>录入学生成绩</a></li>
 						</ul>
 					</li>
+					<li><a href="javascript:;" class="inactive"> 
+						<span class="glyphicon glyphicon-plus-sign"></span>课表信息查询
+					</a>
+						<ul style="display: none">
+							<li><a  href="/teacher_control/showMyArrangement"><span>O</span>我的课表</a></li>
+						</ul>
+					</li>
+					
+					
 					
 					<%}%>
 				</ul>

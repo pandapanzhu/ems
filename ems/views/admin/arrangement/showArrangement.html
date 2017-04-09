@@ -124,7 +124,7 @@ $(function(){
                 success:function(data){
                     var list=data.list;
                     if(list.length!=0){//如果存在排课数据
-                        var html='',html1='',html2='',html3='';
+                        var html1='',html2='',html3='';
                         var title=data.title
                         //===============生成课程的表格=============
                         //==================标题===================
@@ -146,9 +146,10 @@ $(function(){
                         $("table tbody").empty().append(html3);
                         //==============end tr,td=============
                         for(var i in list){
+                           var html='';
                            var times=list[i].times;
                            var classtime=times[0]+","+times[1];
-                           $("td").each(function(){
+                           $("td").each(function(){//td遍历
                                var id=$(this).data("id");
                             if(id==classtime){//通过Id,在后台获取名称等信息发送到前台
                                 var sendData={
@@ -163,6 +164,7 @@ $(function(){
                                     dataType:'json',
                                     url:'/admin_arrangement/getNameById',
                                     success:function(data){
+                                        
                                         var msgs=data.msg
                                         if(msgs=='error'){
                                             parent.layer.msg("获取具体信息出错，请检查信息！");

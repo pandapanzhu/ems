@@ -2,6 +2,7 @@ const EventInfo=require('../../modules/event');
 const utils=require('../util');
 const PageInfo=require('../page');
 const Registration=require('../../modules/registration');
+const StudentInfo=require('../../modules/studentInfo');
 module.exports=function(app){
     /** 进入活动管理页面*/
     app.get('/admin_event/getEvent',function(req,res){
@@ -102,4 +103,18 @@ module.exports=function(app){
             res.send(data);
         });
     }); 
+    /**
+     * 根据学生的学号查询学生信息
+     */
+    app.post('/admin_event/getStudentByStudenIdt',function(req,res){
+        var query=utils.getAllPostForm(req);
+        StudentInfo.findOne(query,function(err,data){
+            if(err) throw err;
+            if(!data){
+                res.send({'msg':'error'});
+            }else{
+                res.send({list:data,'msg':'success'});
+            }
+        })
+    })
 }

@@ -65,9 +65,9 @@
 			<div class="selectbtn">
 				每页显示
 				<select name="numsize" id="numsize">
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
 					</select>
 					条,共<label style="color: #85D9C8" id="total">0</label>	条
 			</div>
@@ -169,7 +169,7 @@
 
 	})
 	//页面初始化
-	QueryPerformance(1,2,"","");
+	QueryPerformance(1,5,"","");
 	var msg=$("#hiddenMsg").val();
 	if(msg!=''){
 		parent.layer.msg(msg);
@@ -235,7 +235,7 @@
                                 html+='<td>' + list[i].point + '</td>' +
                                 '<td>' + list[i].results + '</td>' +
                                 '<td>' + list[i].makeup + '</td>' +
-                                '<td>' + list[i].markeupPerformance + '</td>' +
+                                '<td>' + list[i].makeupPerformance + '</td>' +
                                 '<td>' + list[i].repair + '</td>' +
                                 '<td>' + list[i].repairPerformance + '</td>' +
 								'<td>'+
