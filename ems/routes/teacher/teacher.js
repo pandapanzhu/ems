@@ -172,9 +172,6 @@ app.get('/teacher_control/updatePerformance/:id',function(req,res){
                         }
                         Performance.find(performanceQuery,function(err,performance){
                             if(err) throw err;
-                            console.log(student);
-                            console.log(arrangement);
-                            console.log(performance);
                             res.render('teacher/updatePerformance',{
                                 'msg':'success',
                                 student:student,

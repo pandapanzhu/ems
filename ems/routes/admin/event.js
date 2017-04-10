@@ -34,7 +34,6 @@ module.exports=function(app){
     /**增加活动信息 */
     app.post('/admin_event/doAddEvent',function(req,res){
         const query=utils.getAllPostForm(req);
-        console.log(query);
         EventInfo.create(query,function(err,data){
             if(err) throw err;
             res.render('admin/event/eventInfo',{msg:'添加活动信息成功'})

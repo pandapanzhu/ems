@@ -129,7 +129,6 @@ module.exports=function(app){
             classId:classid,
             dlt:0
         }
-        console.log(query);
         Student.find(query,function(err,data){
             if(err) throw err;
             res.send(data);

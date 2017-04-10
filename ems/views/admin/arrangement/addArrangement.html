@@ -56,21 +56,19 @@
             <!--课程加载完毕，加载时间-->
             <div class="col-md-12">
                 <label class="col-md-1 leftLabel">学年:</label>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <select class="form-control" id="years" name="years">
                     </select>
 
                 </div>
                 <label class="col-md-1 leftLabel">学期:</label>
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <select class="form-control" name="term">
                         <option value="1">1</option><option value="2">2</option>
                     </select>
                 </div>
-            </div>
-            <!--时间加载完成，加载教学楼 -->
-            <div class="col-md-12">
-                <label class="col-md-1 leftLabel">教学楼</label>
+                <!--时间加载完成，加载教学楼 -->
+                <label class="col-md-1 leftLabel">教学楼:</label>
                 <div class="col-md-2">
                     <select name="building" class="form-control">
                         <%for(var i in building){%>

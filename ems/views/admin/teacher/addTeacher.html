@@ -152,9 +152,6 @@ function addBirthday(){
 	var year=date.getFullYear();
 	var month=date.getMonth()+1;
 	var day=date.getDate();
-		console.log(year+''+month+''+day);
-
-
 	for(var i=1900;i<=2150;i++){
 		if(i==year){
 			years+='<option  value='+i+' selected>'+i+'</option>'
@@ -183,7 +180,6 @@ function selectChange(){
  var year =$("#year").val();
  var month=$("#month").val();
  var day=$("#day").val();
- console.log(year+','+month+','+day);
  setDays(year,month,day);
 }
 

@@ -60,7 +60,7 @@ module.exports=function(app){
             }else{//查询出班级之后，将班级id装载到arrangements，然后再根据课程数量来分配教室。
                 arrangements.classId=classs._id;
                     
-                //根据课程的数量来循环
+                //根据课程的数量来循环====待完善
                 var course=query.course.split(","),teacher=query.teacher.split(",");
                 var ep=new eventproxy();
                 ep.after('eventSuccess',course.length,function(data){
@@ -74,10 +74,9 @@ module.exports=function(app){
                         res.send({'msg':'success'});
                     }
                 });
-
                 ep.after("eventError",1,function(data){
                     res.send({'msg':'error'})
-                })
+                });
                 
                 course.forEach(function(item,i){
                     arrangements.courseId=course[i];

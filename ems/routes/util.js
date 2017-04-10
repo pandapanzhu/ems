@@ -43,8 +43,6 @@ module.exports.setFormidable=function(req,res,next){
 
 	form.parse(req,function(err,fields,files){
 
-		console.log(files);
-
 		if (err) throw err;
 		//设置后缀名
 		var extName = '';  //后缀名
@@ -63,10 +61,8 @@ module.exports.setFormidable=function(req,res,next){
                 break;         
         }
 		var studentid=req.body.studentId;
-	console.log(studentid);
 	var filename=studentid+'.'+extName;
 	var newPath=form.uploadDir+filename;
-	console.log(newPath);
 	fs.renameSync(files.studentphoto.path,newPath);//
 
 	});
@@ -100,7 +96,6 @@ module.exports.RecursionForArrangeTime=function(query,time,callback){
 	var j=Math.floor(Math.random()*4);//取一个随机数,因为0的关系，所以需要向下取整
 	var times=time[i][j];
 	query.times=times;
-	console.log(times);
 	ArrangeMent.findOne(query,function(err,data){
 		if(data){
 			RecursionForArrangeTime(query);
@@ -136,7 +131,6 @@ module.exports.loginController=function(req,res){
 		Admins.count(query,function(err,doc){
 			if(doc==1){
 				var findResult=Admins.find(query,function(err,result){
-					console.log(result[0].name);
 					if(err) {
 						res.send(err);
 					}else{
