@@ -12,7 +12,6 @@ const TeacherInfoShema=new mongoose.Schema({
     birthday:String,
     originSchool:String,//毕业院校
     politicalLandscape:String,//政治面貌
-    department:String,//系
     faculty:String,//学院
     phoneNo:String,//电话号码
     e_mail:String,

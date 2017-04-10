@@ -54,7 +54,7 @@
         <tr>
         <td><%=student[i].studentId%></td>
         <td><%=student[i].name%></td>
-        <td><%=student[i].faculty%></td>
+        <td class="facultyName" data-id="<%=student[i].faculty%>"></td>
         <td><%=student[i].gradeId%>级<%=student[i].major%><%=student[i].classId%>班</td>
         <td>
             <%if(performance.length>0){
@@ -88,7 +88,7 @@
 $(function(){
     var msg=$("hiddenMsg").val();
     if(msg=='error'){
-        parent.layer.confirm("查询信息出错，是否继续？")}
+        parent.layer.msg("查询信息出错")
     }
     $.ajax({
         data:{course:$("#hiddenCourseId").val()},
@@ -99,7 +99,22 @@ $(function(){
             var courseName=data.course.courseName
             $(".showCourseName").empty().append(courseName);
         }
-    })
+    });
+   $(".facultyName").each(function(){
+       var id=$(this).data("id");
+        $.ajax({
+                data:{faculty:id},
+                async:false,
+                type:'post',
+                dataType:'json',
+                url:'/admin_class/getFacultyById',
+                success:function(data){
+                    html=data.faculty.facultyName
+                }
+        })
+         $(this).empty().append(html);
+   })
+    
 
     $("#back").click(function(){
         history.back(-1);

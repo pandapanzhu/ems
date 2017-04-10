@@ -11,6 +11,7 @@ const EventInfo=require('../../modules/event');
 const Registration=require('../../modules/registration');
 const ClassInfo=require('../../modules/classInfo');
 const Arrangement=require('../../modules/arrangement');
+const FacultyInfo=require('../../modules/faculty');
 
 
 
@@ -86,7 +87,6 @@ module.exports=function(app){
 	//异步加载，查看考试信息，分学年和学期显示考试信息
 	app.post('/student_person/getMytest',function(req,res){
 		var year=req.body.year;
-		year=year.substring(5);
 		//进行一次正则，表示模糊查询
 		year=new RegExp(year);
 		var query={
@@ -116,7 +116,6 @@ module.exports=function(app){
 	//异步加载查询条件等
 	app.post('/student_person/getAllEvent',function(req,res){
 		var year=req.body.year;
-		year=year.substring(5);
 		//进行一次正则，表示模糊查询
 		year=new RegExp(year);
 		var query={
@@ -135,10 +134,10 @@ module.exports=function(app){
 					var limit=data[i].limitation.split(",");
 					for(var j in limit){//限制遍历
 						if(grade==limit[j]){//确认为限制年级
+							limits[i]="0";//0代表未被限制
+						}else{
 							limits[i]="1";//1代表被限制
 							continue;//循环结束
-						}else{
-							limits[i]="0";//0代表未被限制
 						}
 					}
 
@@ -235,7 +234,6 @@ module.exports=function(app){
 				classId:student.classId,
 				dlt:0
 			}
-			console.log(query);
 			if(student==null)res.send({'msg':'error'});
 			else{
 			ClassInfo.findOne(query,function(err,classs){
@@ -245,18 +243,20 @@ module.exports=function(app){
 				var classQuery={term:req.body.term,years:req.body.years,classId:classs._id,dlt:0}
 				Arrangement.find(classQuery,function(err,arrangement){
 					if(err) throw err;
-					res.send({
-						list:arrangement,
-						'msg':'success',
-						title:{
-							years:req.body.years,
-							term:req.body.term,
-							facultyName:student.faculty,
-							grade:student.gradeId,
-							majorName:student.major,
-							classNames:student.classId
-						}
-					});
+					FacultyInfo.findOne({_id:student.faculty,dlt:0},function(err,faculty){
+						res.send({
+							list:arrangement,
+							'msg':'success',
+							title:{
+								years:req.body.years,
+								term:req.body.term,
+								facultyName:faculty.facultyName,
+								grade:student.gradeId,
+								majorName:student.major,
+								classNames:student.classId
+							}
+						});
+					})
 				})
 				}
 			})

@@ -30,6 +30,9 @@ td:hover{
 .teacher{
     font-size: 15px;
 }
+.classes{
+    font-size: 14px;
+}
 
 </style>
 </head>
@@ -120,6 +123,7 @@ $(function(){
                                var id=$(this).data("id");
                             if(id==classtime){//通过Id,在后台获取名称等信息发送到前台
                                 var sendData={
+                                    classId:list[i].classId,
                                     course:list[i].courseId,
                                     teacher:list[i].teacherId,
                                     classRoom:list[i].classRoomId
@@ -139,6 +143,7 @@ $(function(){
                                             html+='<p class="course">'+lists.course+'</p>'
                                                     +'<p class="teacher">'+lists.teacher+'</p>'
                                                     +'<p class="classroom">'+lists.classroom+'</p>'
+                                                    +'<p class="classes">'+lists.classes.gradeId+'级'+lists.classes.majorName+lists.classes.classId+'班</p>'
                                         }
                                     }
                                 });

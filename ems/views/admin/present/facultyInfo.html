@@ -18,12 +18,8 @@
 	<div class="c_search clearfix">
 		<div>
 			<span>根据： </span>
-			<select id="selectType">
-				<option value="facultyName">学院名称</option>
-                <option value="type">类别</option>
-			</select>
+			<input id="selectType" value="facultyName">学院名称</input>
 		</div>
-		
 		<div id="enterInput">
 			<input type="text" id="condition" class="form-control">		
 		</div>
@@ -41,7 +37,6 @@
 		<tr>
 			<th >学院ID</th>	
 			<th>名称</th>
-			<th>类别</th>
 			<th colspan="2" style="min-width:100px;">操作</th>
 		</tr>
 	</thead>
@@ -65,6 +60,33 @@
 			</div>
 		</div>
 
+<div class="modal fade" id="newFacultyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form  class="form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">请输入学院的名称</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">学院名称:</label>
+					<div class="col-xs-8">
+						<input class="form-control" id="newfacultyName" type="text">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="saveChanges">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
 </body>
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
@@ -76,22 +98,25 @@
 	$(function(){
 
 		$("#newFaculty").click(function(){
-			location.href="/admin_present/addFaculty"
+			$("#newFacultyModal").modal("show");
 		});
-
-		//更改搜索框的样式
-		$("#selectType").change(function(){
-			const selectName=$(this).val();
-			var html='';
-			if(selectName=='type'){
-				html+='<select name="type" class="form-control" id="condition">'+
-				'<option value="faculty">学院</option>'+
-				'<option value="department">系</option>'
-				
-			}else{
-				html+='<input type="text"  id="condition" class="form-control">'
-			}
-			$("#enterInput").empty().append(html);
+		$("#saveChanges").click(function(){
+			var faculty=$("#newfacultyName").val();
+			$.ajax({
+				data:{facultyName:faculty},
+				type:'post',
+				dataType:'json',
+				url:'/admin_present/doAddFaculty',
+				success:function(data){
+					var msg=data.msg
+					if(msg=='error'){
+						parent.layer.msg('添加失败~');
+					}else{
+						parent.layer.msg('添加成功~');
+						location.reload();
+					}
+				}
+			})
 		})
 
 		//每页显示多少条数据
@@ -102,7 +127,6 @@
 			QueryFaculty(1,numsize,type,condition);
 		});
 
-
 		//查询信息
 		$("#query_btn").click(function(){
 			var numsize=$("#numsize").val();
@@ -111,8 +135,6 @@
 			QueryFaculty(1,numsize,type,condition);
 		});
 	})
-
-
 
 
 	//动态添加页面，并实现分页
@@ -136,19 +158,12 @@
 						
 						if (list.length > 0) {
 							for (var i = 0; i < list.length; i++) {
-								var types;
-								if(list[i].type=='faculty'){
-									types='学院'
-								}else if(list[i].type=='department'){
-									types='系'
-								}
 								html += '<tr>' + 
 								'<td>' + list[i]._id + '</td>' +
 								'<td>' + list[i].facultyName + '</td>' +
-								'<td>' + types + '</td>' +
 								'<td class="col-md-2 col-xs-3">'+
-								'<a href="javascript:;"  data-id="'+list[i].facultyName+'" data-type="'+list[i].type+'" class="deleteFaculty">删除</a>&nbsp;|&nbsp;'+
-								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i].facultyName+'" data-type="'+list[i].type+'" class="querymajor">查看所属专业</a></td>'+
+								'<a href="javascript:;"  data-id="'+list[i]._id+'"  class="deleteFaculty">删除</a>&nbsp;|&nbsp;'+
+								'<a href="javascript:;" style="color:#D9534F" data-id="'+list[i]._id+'" class="querymajor">查看所属专业</a></td>'+
 								'</tr>';
 							}//end for
 						} else {
@@ -172,16 +187,15 @@
 						
 						//查看专业信息
 						$(".querymajor").click(function(){
-							const name=$(this).data("id");
-							location.href='/admin_present/queryMajor/'+name; 
+							const id=$(this).data("id");
+							location.href='/admin_present/queryMajor/'+id; 
 						})
 
 						//删除信息
 						$(".deleteFaculty").click(function(){
 							var id=$(this).data("id");
-							var types=$(this).data("type");
 							$.ajax({
-								data:{id:id,type:types},
+								data:{id:id},
 								type:'post',
 								dataType:'json',
 								url:'/admin_present/deleteFaculty',

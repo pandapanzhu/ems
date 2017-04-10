@@ -16,7 +16,7 @@
 	font-weight:700 !important;
 	color:#fff;
 }
-input[type="text"]{
+input[type="text"],.showInfo{
 	width:90%;
 	min-width:120px;
 }
@@ -71,7 +71,10 @@ input[type="text"]{
 	<td>来源高中：</td>
 	<td><input type="text" name="originSchool"></ins></td>
 	<td>政治面貌：</td>
-	<td><input type="text" name="politicalLandscape"></td>
+	<td><select name="politicalLandscape" class="showInfo">
+			<option>群众</option><option>少先队员</option><option>共青团员</option>
+			<option>预备党员</option><option>党员</option>
+		</select></td>
 </tr>
 
 <tr >
@@ -94,27 +97,30 @@ input[type="text"]{
 
 <tr >
 	<td >所属学院：</td>
-	<td ><input type="text" name="faculty"></td>
-	<td >所属系别：</td>
-	<td ><input type="text" name="department"></td>
+	<td ><select name="faculty" class="showInfo" id="facultyInfo">
+			<option>--请选择学院--</option>
+			<%for(var i in faculty){%>
+			<option value="<%=faculty[i]._id%>"><%=faculty[i].facultyName%></option>
+			<%}%>
+		</select>	
+	</td>
 	<td>所修专业：</td>
-	<td><input type="text" name="major"></td>
-
+	<td><select id="majorSelect" name="major" class="showInfo"><option>--请先选择学院--</option></select></td>
+	<td>所属年级：</td>
+	<td><select id="chooseGrade" name="gradeId" class="showInfo"><option>--请先选择学院--</option></select></td>
 	<td style="width:150px;"><input type="file"  name="studentphoto" multiple="multiple" style="width:80%;"></td>
 </tr>
 </tr>
 
 <tr >
-	<td>所属年级：</td>
-	<td><input type="text" name="gradeId"></td>
 	<td >所属班级：</td>
-	<td ><input type="text" name="classId"></td>
+	<td ><select id="classSelect" name="classId" class="showInfo"><option>--请先选择学院--</option></select></td>
+	<td>学制：</td>
+	<td><input type="text" name="studyYear"></td>
 	<td>考生号：</td>
 	<td><input type="text" name="candidateNo"></ins></td>
 </tr>
 <tr>
-	<td>学制：</td>
-	<td><input type="text" name="studyYear"></td>
 	<td>准考证号：</td>
 	<td><input type="text" name="ticketNo"></td>
 	<td>学历层次：</td>
@@ -181,14 +187,53 @@ function selectChange(){
  setDays(year,month,day);
 }
 
-
-
-
 $(function(){
-	$("#back").click(function(){
-				location.href='/admin_student/studentInfo';
-	});
+	
+	//选择学院后，动态加载专业
+	$("#facultyInfo").change(function(){
+		const faculty=$("#facultyInfo").val();
+		$.ajax({
+			data:{id:faculty},
+			type:'post',
+			dataType:'json',
+			url:'/admin_arrangement/getGradeByFaculty',
+			success:function(data){
+				var html='',list=data.list;
+				for(var i in list){
+					html+='<option value="'+list[i]+'">'+list[i]+'</option>';
+				}
+				$("#chooseGrade").empty().append(html);
+                var grade=$("#chooseGrade").val();
+                getMajor(faculty,grade);
+                
+			},error:function(data){
+				 parent.layer.msg("年级加载失败");
+			}
+		});//end ajax
+	});//end facultyInfo change
 
+    $("#chooseGrade").change(function(){
+        var grade=$(this).val();
+        var faculty=$("#facultyInfo").val();
+        getMajor(faculty,grade);
+    });
+
+    $("#majorSelect").change(function(){
+         var faculty=$("#facultyInfo").val();
+         var grade=$("#chooseGrade").val();
+         var major=$(this).val();
+         getClass(faculty,major,grade);
+    });
+
+
+
+
+
+
+
+	$("#back").click(function(){
+		location.href='/admin_student/studentInfo';
+	});
 	$("#year").change(function(){
 		 selectChange();
 	});
@@ -203,10 +248,49 @@ $(function(){
 		var html='<input type="hidden" name="birthday" value='+year+'-'+month+'-'+day+'> ';
 		$("#selectBir").append(html);
 	});
-
-
-
 })
+
+function getMajor(faculty,grade){
+         $.ajax({
+            data:{grade:grade,faculty:faculty},
+            type:'post',
+            dataType:'json',
+            url:'/admin_arrangement/getMajorByGrade',
+            success:function(data){
+                var html='',list=data.list;
+				for(var i in list){
+					html+='<option value="'+list[i]+'">'+list[i]+'</option>';
+				}
+				$("#majorSelect").empty().append(html);
+                var major=$("#majorSelect").val();
+                getClass(faculty,major,grade);
+            },error:function(){
+                parent.layer.msg("加载专业失败");
+            }
+        })
+    }
+
+    /**
+     * 获取班级信息
+     */
+    function getClass(faculty,major,grade){
+        $.ajax({
+             data:{faculty:faculty,grade:grade,major:major},
+             async:false,
+             type:'post',
+             dataType:'json',
+             url:'/admin_arrangement/getClassByMajor',
+             success:function(data){
+                var html='',list=data.list;
+				for(var i in list){
+					html+='<option value="'+list[i]+'">'+list[i]+'</option>';
+				}
+				$("#classSelect").empty().append(html);
+            },error:function(){
+                parent.layer.msg("加载班级失败");
+            }
+        })
+    }
 
 
 </script>

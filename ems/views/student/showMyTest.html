@@ -18,7 +18,7 @@
 	<div class="c_search clearfix">
 		<div>
 			<span>根据： </span>
-			学年:
+			年份:
 		</div>
 		
 		<div id="changeSelect">
@@ -73,8 +73,8 @@
             success:function(data){
                 if(data!=null){
                     var year=data.grade;
-                    var html='<div><select class="form-control" id="getYears"><option>'+year+'-'+(++year)+'</option>'
-                    +'<option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option>'
+                    var html='<div><select class="form-control" id="getYears"><option>'+(year++)+'</option>'
+                    +'<option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option>'
                     +'</select></div>'
                     $("#changeSelect").empty().append(html);
                 }

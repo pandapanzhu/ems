@@ -8,7 +8,6 @@ const classInfoSchema=new mongoose.Schema({
     majorName:String,//专业
     gradeId:String,//年级
     classId:String,//班级
-    studentNumber:Number,//学生人数
     teacherName:String,//班主任姓名
 
 	remark:{type:String,default:""},//备注

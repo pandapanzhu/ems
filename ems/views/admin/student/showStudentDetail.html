@@ -92,26 +92,25 @@
 
 <tr >
 	<td >所属学院：</td>
-	<td ><%=studentInfo[0].faculty%></td>
-	<td> 所属系别：</td>
-	<td> <%=studentInfo[0].department%></td>
+	<td class="showFacultyName"></td>
 	<td>所修专业：</td>
 	<td><%=studentInfo[0].major%></td>
+	<td>所属年级：</td>
+	<td><%=studentInfo[0].gradeId%></td>
 </tr>
 </tr>
 
 <tr >
-	<td>所属年级：</td>
-	<td><%=studentInfo[0].gradeId%></td>
+	
 	<td >所属班级：</td>
 	<td ><%=studentInfo[0].classId%></td>
-	<td>考生号：</td>
-	<td><%=studentInfo[0].candidateNo%></td>
-	
-</tr>
-<tr>
 	<td>学制：</td>
 	<td><%=studentInfo[0].studyYear%></td>
+	<td>考生号：</td>
+	<td><%=studentInfo[0].candidateNo%></td>
+</tr>
+<tr>
+	
 	<td>准考证号：</td>
 	<td><%=studentInfo[0].ticketNo%></td>
 	<td>学历层次：</td>
@@ -136,16 +135,24 @@ if (message!=null &&message!=''){
 	layer.msg(message);
 }
 
+$.ajax({
+	data:{faculty:"<%=studentInfo[0].faculty%>"},
+	async:false,
+	type:'post',
+	dataType:'json',
+	url:'/admin_class/getFacultyById',
+	success:function(data){
+		var html='<td>'+data.faculty.facultyName+'</td>'
+		$(".showFacultyName").empty().append(html);
+	}
+})
 
 $(function(){
-	// $("form").submit(function(){
-	// 	parent.layer.alert("我要提交了！");
-	// })
 	$("#back").click(function(){
 		location.href='/admin_student/studentInfo';
 	});
 	$("#modify").click(function(){
-		var id = <%=studentInfo[0].studentId%>;
+		var id = "<%=studentInfo[0].studentId%>";
 		location.href="/admin_student/modifyStudentInfo/"+id;
 	})
 });

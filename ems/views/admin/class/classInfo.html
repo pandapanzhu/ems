@@ -35,13 +35,16 @@
 				<option value="facultyName">学院</option>
 				<option value="majorName">专业</option>
 				<option value="gradeId">年级</option>
-				<option value="studentNumber">人数</option>
 				<option value="teacherName">班主任</option>
 			</select>
 		</div>
 		
-		<div>
-			<input type="text" name="search" id="condition" class="form-control">		
+		<div id="showChangeType">
+			<select id="condition" class="form-control">
+				<%for(var i in faculty){%>
+					<option value="<%=faculty[i]._id%>"><%=faculty[i].facultyName%></option>
+				<%}%>
+			</select>
 		</div>
 		<div>
 			<button class="btn" id="query_btn">搜索</button>
@@ -56,11 +59,10 @@
 	<table class="table table-hover span12" id="mytable">
 	<thead>
 		<tr>
-			<th>学院</th>	
+			<th>学院</th>
 			<th>专业</th>
 			<th>年级</th>
 			<th>班级</th>
-			<th>人数</th>
 			<th>班主任</th>
 			<th colspan="2" style="min-width:100px;">操作</th>
 		</tr>
@@ -84,7 +86,37 @@
 				</ul>
 			</div>
 		</div>
-
+<div class="modal fade" id="modifyClassInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form  class="form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">请修改班级信息</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">班主任:</label>
+					<div class="col-xs-8">
+						<select class="form-control" id="teacherName">
+							<%for(var i in teacher){%>
+								<option><%=teacher[i]%></option>
+							<%}%>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="saveChanges">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
 </body>
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
@@ -92,7 +124,18 @@
 <script type="text/javascript">
 
 	$(function(){
-
+		$("#selectType").change(function(){
+			var type=$(this).val();
+			var html=''
+			if(type=='facultyName'){
+				html+='<select id="condition" class="form-control"><%for(var i in faculty){%>'
+					+'<option value="<%=faculty[i]._id%>"><%=faculty[i].facultyName%></option>'
+					+'<%}%></select>'
+			}else{
+				html+='<input type="text"  id="condition" class="form-control">	'
+			}
+			$("#showChangeType").empty().append(html);
+		})
 		//新建班级信息
 		$("#newProject").click(function(){
 			location.href="/admin_class/addClass"
@@ -112,15 +155,14 @@
 			var type=$("#selectType").val();
 			var condition=$("#condition").val();
 			QueryClass(1,numsize,type,condition);
-		})
+		});
+
 
 
 
 	})
 	//页面初始化
 	QueryClass(1,5,"","");
-
-
 
 	//动态添加页面，并实现分页
 	function QueryClass(pageNum, pageSize,type,condition) {
@@ -143,12 +185,20 @@
 						
 						if (list.length > 0) {
 							for (var i = 0; i < list.length; i++) {
-								html += '<tr>' + 
-								'<td>' + list[i].facultyName + '</td>' +
-								'<td>' + list[i].majorName + '</td>' +
+								html += '<tr>'
+								$.ajax({
+									data:{faculty:list[i].facultyName},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_class/getFacultyById',
+									success:function(data){
+										html+='<td>'+data.faculty.facultyName+'</td>'
+									}
+								})
+								html+='<td>' + list[i].majorName + '</td>' +
 								'<td>' + list[i].gradeId + '</td>' +
 								'<td>' + list[i].classId + '</td>' +
-								'<td>' + list[i].studentNumber + '</td>' +
 								'<td>' + list[i].teacherName + '</td>' +
 								'<td class="col-md-3">'+
 								'<a href="javascript:;"  class="modifyClassDetail" data-id="'+list[i]._id+'" >修改</a>&nbsp;|&nbsp;'+
@@ -178,8 +228,26 @@
 						//修改班级详细信息
 						$(".modifyClassDetail").click(function(){
 							var id=$(this).data("id");
-							location.href="/admin_class/modifyClassDetail/"+id;
+							$("#teacherName").attr("data-id",id);
+							$("#modifyClassInfoModal").modal('show');
 						});
+						$("#saveChanges").click(function(){
+							var sData={classId:$("#teacherName").attr("data-id"),teacherName:$("#teacherName").val()}
+							$.ajax({
+								data:sData,
+								type:'post',
+								dataType:'json',
+								url:'/admin_class/doModifyClass',
+								success:function(data){
+									if(data.msg=='error'){
+										parent.layer.msg('修改班级失败~');
+									}else{
+										parent.layer.msg('修改班级成功~');
+										location.reload();
+									}
+								}
+							})
+						})
 						//删除班级信息
 						$(".deleteClass").click(function(){
 							var sendData={

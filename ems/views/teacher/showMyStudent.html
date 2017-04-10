@@ -104,7 +104,17 @@ $(function(){
                                                     if(msgs=='error'){
                                                          parent.layer.msg("获取班级信息出错！");
                                                     }else{
-                                                        html+='<td>'+classess.facultyName+classess.gradeId+'级'+classess.majorName+classess.classId+'班'
+                                                        $.ajax({
+                                                            data:{faculty:classess.facultyName},
+                                                            async:false,
+                                                            type:'post',
+                                                            dataType:'json',
+                                                            url:'/admin_class/getFacultyById',
+                                                            success:function(data){
+                                                                html+='<td>'+data.faculty.facultyName
+                                                            }
+                                                        })
+                                                        html+=classess.gradeId+'级'+classess.majorName+classess.classId+'班</td>'
                                                     }
                                                 }
                                             });//end class ajax

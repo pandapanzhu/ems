@@ -11,9 +11,13 @@ const Student=require('../../modules/student');
 module.exports=function(app){
     //进入查看班级页面
     app.get('/admin_class/getClass',function(req,res){
-        res.render('admin/class/classInfo');
+		Faculty.find({dlt:0},function(err,faculty){
+			TeacherInfo.distinct('name',{dlt:0},function(err,teacher){
+				res.render('admin/class/classInfo',{faculty:faculty,teacher:teacher});
+			})
+		})
+        
     });
-
     app.post('/admin_class/getClassInfo',function(req,res){
 		var type=req.body.type;
 		var name=req.body.name;
@@ -53,7 +57,7 @@ module.exports=function(app){
 	/**选择学院后，动态加载专业 */
 	app.post('/admin_class/getMajorInfo',function(req,res){
 		const facultyId=req.body.id;
-		Major.find({facultyName:facultyId,dlt:0},function(err,data){
+		Major.find({facultyId:facultyId,dlt:0},function(err,data){
 			res.send(data);
 		})
 	});
@@ -100,38 +104,32 @@ module.exports=function(app){
 	 */
 	app.post('/admin_class/deleteClassInfo',function(req,res){
 		const id=req.body.id;
-		ClassInfo.update({_id:id},{$set:{dlt:1}},function(err,data){
+		ClassInfo.update({_id:id},{$set:{dlt:1,updateAt:Date.now()}},function(err,data){
 			if(err) throw err;
 			res.send({msg:'success'});
 		})
 	});
 
-	/**进入修改班级页面 */
-	app.get('/admin_class/modifyClassDetail/:id',function(req,res){
-		const id=req.params.id;
-		ClassInfo.findOne({_id:id},function(err,data){
-			if (err) throw err;
-			res.render('admin/class/modifyClass',{hiddenId:data._id,
-				teacherName:data.teacherName,
-				studentNumber:data.studentNumber
-			});
-		})
-	});
-	/**修改班级人数和班主任信息 */
+	/**修改班主任信息 */
 	app.post('/admin_class/doModifyClass',function(req,res){
 		const query={
-			_id:req.body.hiddenId,
+			_id:req.body.classId,
 			dlt:0
 		}
 		const updates={
-			studentNumber:req.body.studentNumber,
-			teacherName:req.body.teacherName
+			teacherName:req.body.teacherName,
+			updateAt:Date.now()
 		}
 		ClassInfo.update(query,{$set:updates},function(err,data){
 			if (err) throw err;
-			res.render('admin/class/classInfo',{msg:'修改班级成功'})
+			if(data.nModified>0){
+				res.send({'msg':'success'})
+			}else{
+				res.send({'msg':'error'})
+			}
 		})
 	});
+
 	//查询该班学生信息
 	app.get('/admin_class/showStudentInfoById/:id',function(req,res){
 		const classId=req.params.id;
@@ -181,6 +179,15 @@ module.exports=function(app){
 				if(err) throw err;
 				res.send({'msg':'success'})
 			})
+		})
+	});
+	/**
+	 * 根据学院信息，查询学院的详细信息
+	 */
+	app.post('/admin_class/getFacultyById',function(req,res){
+		Faculty.findOne({_id:req.body.faculty,dlt:0},function(err,data){
+			if(err) throw err;
+			res.send({faculty:data});
 		})
 	})
 }//end js

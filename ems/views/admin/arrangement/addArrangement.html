@@ -244,7 +244,7 @@ $(function(){
 			success:function(data){
 				var html='';
 				for(var i in data){
-					html+='<option value="'+data[i].facultyName+'">'+data[i].facultyName+'</option>';
+					html+='<option value="'+data[i]._id+'">'+data[i].facultyName+'</option>';
 				}
 				$("#facultyInfo").append(html);
 			},

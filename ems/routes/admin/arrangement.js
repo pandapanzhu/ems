@@ -180,7 +180,8 @@ module.exports=function(app){
      * 显示课表信息
      */
     app.post('/admin_arrangement/doShowArrangement',function(req,res){
-         var classes={dlt:0}
+        var request=utils.getAllPostForm(req);
+        var classes={dlt:0}
         classes.facultyName=req.body.facultyName;
         classes.majorName=req.body.majorName;
         classes.gradeId=req.body.grade;
@@ -197,7 +198,10 @@ module.exports=function(app){
             }
             Arrangement.find(query,function(err,data){
                 if(err) throw err;
-                res.send({list:data,'msg':'',title:utils.getAllPostForm(req)});
+                Faculty.findOne({_id:req.body.facultyName,dlt:0},function(err,faculty){
+                    request.facultyName=faculty.facultyName;
+                     res.send({list:data,'msg':'',title:request});
+                })
             });
            }else{
                res.send({'msg':'classes'});
@@ -208,38 +212,29 @@ module.exports=function(app){
      * 根据各种Id,获取具体信息，并传向前台
      */
     app.post('/admin_arrangement/getNameById',function(req,res){
-        var courseQuery={
-            _id:req.body.course,
-            dlt:0
-        };
-        var tercherQuery={
-            teacherId:req.body.teacher,
-            dlt:0
-        };
-        var classRoomQuery={
-            _id:req.body.classRoom,
-            dlt:0
-        }
         var resData={}
-        CourseInfo.findOne(courseQuery,function(err,course){
+        CourseInfo.findOne({_id:req.body.course,dlt:0},function(err,course){
             if(err) throw err;
             if(!course){
                 res.send({'msg':'error'});
             }else{
                 resData.course=course.courseName;
-                TeacherInfo.findOne(tercherQuery,function(err,teacher){
+                TeacherInfo.findOne({teacherId:req.body.teacher,dlt:0},function(err,teacher){
                     if(err) throw err;
                     if(!teacher){
                         res.send({'msg':'error'});
                     }else{
                         resData.teacher=teacher.name;
-                        ClassRoom.findOne(classRoomQuery,function(err,classroom){
+                        ClassRoom.findOne({_id:req.body.classRoom,dlt:0},function(err,classroom){
                             if(err) throw err;
                             if(!classroom){
                                 res.send({'msg':'error'});
                             }else{
                                 resData.classroom=classroom.classroomName;
-                                res.send({list:resData,'msg':''})
+                                ClassInfo.findOne({_id:req.body.classId,dlt:0},function(err,classes){
+                                    resData.classes=classes
+                                    res.send({list:resData,'msg':''})
+                                })
                             }
                         })
                     }

@@ -56,13 +56,6 @@
 					<!--end form-group-->
 					<!--班级编号在本专业本年级的基础上自增，-->
 					<div class="form-group">
-						<label class="col-md-3 leftLabel">学生人数：</label>
-						<div class="col-md-8">
-							<input type="text" class="form-control" name="studentNumber" placeholder="请输入学生人数">
-						</div>
-					</div>
-					<!--end form-group-->
-					<div class="form-group">
 						<label class="col-md-3 leftLabel">班主任姓名:</label>
 						<div class="col-md-8">
 							<select class="form-control" name="teacherName" >
@@ -134,7 +127,7 @@ $(function(){
 			success:function(data){
 				var html='';
 				for(var i in data){
-					html+='<option value="'+data[i].facultyName+'">'+data[i].facultyName+'</option>';
+					html+='<option value="'+data[i]._id+'">'+data[i].facultyName+'</option>';
 				}
 				$("#facultyInfo").append(html);
 			},
@@ -208,22 +201,6 @@ $(function(){
                         }
                     }
                 },
-				studentNumber:{
-					validators:{
-						notEmpty:{
-							message:'学生人数不能为空'
-						},
-						stringLength: {
-                            min: 1,
-                            max: 3,
-                            message: '最多三位数'
-                        },
-                        regexp: {
-                            regexp: /^[0-9]+$/,
-                            message: '学生人数只能由数字组成'
-                        }
-					}
-				},
 				teacherName:{
 					validators:{
 						notEmpty:{

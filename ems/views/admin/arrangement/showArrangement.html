@@ -30,7 +30,9 @@ td:hover{
 .teacher{
     font-size: 15px;
 }
-
+.classes{
+    font-size: 14px;
+}
 </style>
 </head>
 
@@ -132,13 +134,13 @@ $(function(){
                              +title.facultyName+title.grade+'级'+title.majorName+title.classNames+'班'
                         $("table caption").empty().append(html1);
                         //=================th=====================
-                         html2='<th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th>'
+                         html2='<th></th><th>星期一</th><th>星期二</th><th>星期三</th><th>星期四</th>'
                                  +'<th>星期五</th><th>星期六</th><th>星期日</th>'
                         $("table thead").empty().append(html2);
                         //================tr,td=================
                         for(var i=0;i<5;i++){
-                            html3+='<tr>';
-                            for(var j=0;j<7;j++){
+                            html3+='<tr><td>第'+(i+1)+'节大课</td>';
+                            for(var j=0;j<=7;j++){
                                 html3+='<td data-id="'+(i+1)+','+(j+1)+'"></td>'
                             }
                             html3+='</tr>'
@@ -153,6 +155,7 @@ $(function(){
                                var id=$(this).data("id");
                             if(id==classtime){//通过Id,在后台获取名称等信息发送到前台
                                 var sendData={
+                                    classId:list[i].classId,
                                     course:list[i].courseId,
                                     teacher:list[i].teacherId,
                                     classRoom:list[i].classRoomId
@@ -173,6 +176,7 @@ $(function(){
                                             html+='<p class="course">'+lists.course+'</p>'
                                                     +'<p class="teacher">'+lists.teacher+'</p>'
                                                     +'<p class="classroom">'+lists.classroom+'</p>'
+                                                    +'<p class="classes">'+lists.classes.gradeId+'级'+lists.classes.majorName+lists.classes.classId+'班</p>'
                                         }
                                     }
                                 });
@@ -289,7 +293,7 @@ $(function(){
 			success:function(data){
 				var html='';
 				for(var i in data){
-					html+='<option value="'+data[i].facultyName+'">'+data[i].facultyName+'</option>';
+					html+='<option value="'+data[i]._id+'">'+data[i].facultyName+'</option>';
 				}
 				$("#facultyInfo").append(html);
 			},

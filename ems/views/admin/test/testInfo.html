@@ -105,8 +105,6 @@
 		</div>
 	</div>
 </div>
-				
-<input type="hidden" value="<%=msg%>" id="hiddenMsg">
 
 </body>
 	<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
@@ -248,12 +246,6 @@
 })
 	//页面初始化
 	QueryTestInfo(1,5,"","");
-	var msg=$("#hiddenMsg").val();
-	if(msg!=''){
-		parent.layer.msg(msg);
-	}
-
-
 
 	//动态添加页面，并实现分页
 	function QueryTestInfo(pageNum, pageSize,type,condition) {

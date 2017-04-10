@@ -18,9 +18,8 @@
 	<div class="c_search clearfix">
 		<div>
 			<span>根据： </span>
-			学年:
+			年份:
 		</div>
-		
 		<div id="changeSelect">
 		</div>
 	</div>
@@ -69,8 +68,8 @@
             success:function(data){
                 if(data!=null){
                     var year=data.grade;
-                    var html='<div><select class="form-control" id="getYears"><option>'+year+'-'+(++year)+'</option>'
-                    +'<option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option><option>'+year+'-'+(++year)+'</option>'
+                    var html='<div><select class="form-control" id="getYears"><option>'+(year++)+'</option>'
+                    +'<option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option>'
                     +'</select></div>'
                     $("#changeSelect").empty().append(html);
                 }
@@ -97,7 +96,7 @@
 							for (var i = 0; i < list.length; i++) {
 								html += '<tr>'+
                                 '<td>' + list[i].eventName + '</td>' +
-                                '<td>' + list[i].limitation + '</td>' +
+                                '<td>本活动仅限' + list[i].limitation + '级的同学参加</td>' +
                                 '<td>' + list[i].startTime + '</td>' +
                                 '<td>' + list[i].endTime + '</td>' 
 								if(limits[i]==0){

@@ -74,18 +74,9 @@
                                 <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">
                                     <select class="form-control" id="building" >
                                         <option value="">--请选择教学楼--</option>
-                                        <option value=1>1教</option>
-                                        <option value=2>2教</option>
-                                        <option value=3>3教</option>
-                                        <option value=4>4教</option>
-                                        <option value=5>5教</option>
-                                        <option value=6>6教</option>
-                                        <option value=7>7教</option>
-                                        <option value=8>8教</option>
-                                        <option value=9>9教</option>
-                                        <option value=10>10教</option>
-                                        <option value=11>11教</option>
-                                        <option value=12>12教</option>
+                                        <%for(var i in building){%>
+                                        <option value="<%=building[i]%>"><%=building[i]%>教</option>
+                                        <%}%>
                                     </select>
                                 </div>
                                 <div class="col-xs-6" style="padding-right:0px; padding-left:0px;">

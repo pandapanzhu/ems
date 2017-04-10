@@ -5,11 +5,17 @@ const crypto=require('crypto');
 const utils=require('../util');
 const fs=require('fs');
 const PageInfo=require('../page');
+const Faculty=require('../../modules/faculty');
+const Major=require('../../modules/major');
+const ClassInfo=require('../../modules/classInfo');
 
 module.exports=function(app){
 	//进入添加学生信息页面
 	app.get('/admin_student/addStudent',function(req,res){
-		res.render('admin/student/addStudent',{title:'新建学生信息'});
+		Faculty.find({dlt:0},function(err,faculty){
+			res.render('admin/student/addStudent',{faculty:faculty});
+		})
+		
 	});
 
 	//添加学生基本信息
@@ -32,41 +38,38 @@ module.exports=function(app){
 		var photoname=req.files.studentphoto.name;
 
 		if(photoname!=''){
-		var newPath;
-		var filename;
-		var type=req.files.studentphoto.type;
-		var path=req.files.studentphoto.path;
-		
-		//设置后缀名
-		var extName = '';  //后缀名
-        switch (type) {
-            case 'image/pjpeg':
-                extName = 'jpg';
-                break;
-            case 'image/jpeg':
-                extName = 'jpg';
-                break;         
-            case 'image/png':
-                extName = 'png';
-                break;
-            case 'image/x-png':
-                extName = 'png';
-                break;         
-        }
-
-	var studentid=req.body.studentId;
-	var studentName=req.body.name;
-	var paths='public\\uploadimages\\students\\';
-	//设置新的文件名
-	filename=studentid+studentName+'.'+extName;
-	//设置新的路径
-	newPath=paths+filename;
-	fs.renameSync(path,newPath);//重命名
-	query.studentPhoto=filename;
-	}
-
+			var newPath;
+			var filename;
+			var type=req.files.studentphoto.type;
+			var path=req.files.studentphoto.path;
+			
+			//设置后缀名
+			var extName = '';  //后缀名
+			switch (type) {
+				case 'image/pjpeg':
+					extName = 'jpg';
+					break;
+				case 'image/jpeg':
+					extName = 'jpg';
+					break;         
+				case 'image/png':
+					extName = 'png';
+					break;
+				case 'image/x-png':
+					extName = 'png';
+					break;         
+			}
+			var studentid=req.body.studentId;
+			var studentName=req.body.name;
+			var paths='public\\uploadimages\\students\\';
+			//设置新的文件名
+			filename=studentid+studentName+'.'+extName;
+			//设置新的路径
+			newPath=paths+filename;
+			fs.renameSync(path,newPath);//重命名
+			query.studentPhoto=filename;
+		}
 		var query=utils.getAllPostForm(req);
-		
 		StudentInfo.create(query,function(err,data){
 			if(err) throw err;
 			 res.redirect('/admin_student/showStudentDetail/'+req.body.studentId);
@@ -142,7 +145,6 @@ module.exports=function(app){
 				title:'查询学生基本信息',
 				studentInfo:data,
 				success:'删除成功'
-
 			})
 		})
 	});
@@ -151,9 +153,10 @@ module.exports=function(app){
 app.get('/admin_student/modifyStudentInfo/:studentInfoid',function(req,res){
 	const studentInfoid=req.params.studentInfoid;
 	query={
-		studentId:studentInfoid
+		studentId:studentInfoid,
+		dlt:0
 	};
-	const studentInfo=StudentInfo.find(query,function(err,data){
+	const studentInfo=StudentInfo.findOne(query,function(err,data){
 		if (err) throw err;
 		res.render('admin/student/modifyStudentInfo',{
 		title:'修改学生信息',

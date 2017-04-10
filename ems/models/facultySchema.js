@@ -4,8 +4,6 @@ process.env.TZ = "Asia/Shanghai";
 //申明一个mongoose对象
 var FacultySchema=new mongoose.Schema({
 	facultyName:String,//学院名称
-	type:String,//类别
-
 	dlt:{type:Number,default:0},
 	createAt:{type:Date,default:Date.now()},
 	updateAt:{type:Date,default:Date.now()}

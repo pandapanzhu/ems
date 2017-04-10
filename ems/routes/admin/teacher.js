@@ -63,38 +63,38 @@ module.exports=function(app){
         var photoname=req.files.teacherphoto.name;
 		var newPath;
 		if(photoname!=''){
-		var type=req.files.teacherphoto.type;
-		var path=req.files.teacherphoto.path;
-		
-		//设置后缀名
-		var extName = '';  //后缀名
-        switch (type) {
-            case 'image/pjpeg':
-                extName = 'jpg';
-                break;
-            case 'image/jpeg':
-                extName = 'jpg';
-                break;         
-            case 'image/png':
-                extName = 'png';
-                break;
-            case 'image/x-png':
-                extName = 'png';
-                break;         
-        }
+			var type=req.files.teacherphoto.type;
+			var path=req.files.teacherphoto.path;
+			
+			//设置后缀名
+			var extName = '';  //后缀名
+			switch (type) {
+				case 'image/pjpeg':
+					extName = 'jpg';
+					break;
+				case 'image/jpeg':
+					extName = 'jpg';
+					break;         
+				case 'image/png':
+					extName = 'png';
+					break;
+				case 'image/x-png':
+					extName = 'png';
+					break;         
+			}
 
-	var teacherName=req.body.name;
-	var paths='public\\uploadimages\\teachers\\';
-	//设置新的文件名
-	filename=teacherid+teacherName+'.'+extName;
-	//设置新的路径
-	newPath=paths+filename;
-	fs.renameSync(path,newPath);//重命名
-	query.teacherPhoto=filename;
+		var teacherName=req.body.name;
+		var paths='public\\uploadimages\\teachers\\';
+		//设置新的文件名
+		filename=teacherid+teacherName+'.'+extName;
+		//设置新的路径
+		newPath=paths+filename;
+		fs.renameSync(path,newPath);//重命名
+		query.teacherPhoto=filename;
 	}
 		TeacherInfo.create(query,function(err,data){
 			if(err) throw err;
-			 res.redirect('/admin_teacher/showTeacherDetail/'+_id);
+			 res.redirect('/admin_teacher/showTeacherDetail/'+data._id);
 		})
 	});
 	
@@ -173,10 +173,10 @@ app.post('/admin_teacher/doModifyTeacherInfo',function(req,res){
 
 	TeacherInfo.update(query,{$set:updates},function(err,data){
 		if(err) throw err;
-			TeacherInfo.find(query,function(err,data){
-			res.render('admin/teacher/showTeacherDetail',{
+		TeacherInfo.findOne(query,function(err,data){
+			res.render("admin/teacher/showTeacherDetail",{
 				teacherInfo:data,
-				message:'修改成功！'
+				message:'修改成功'
 			})
 		})
 	})

@@ -15,7 +15,7 @@ module.exports=function(app){
      * 进入显示成绩页面
      * */
     app.get('/admin_test/showTest',function(req,res){
-        res.render('admin/test/testInfo',{msg:''});
+        res.render('admin/test/testInfo');
     });
 
     /**
@@ -55,8 +55,8 @@ module.exports=function(app){
                         query.courseId=id;
                     }
                     PageInfo.getPages(req, query, Test,function(err,data){
-            res.send(data);
-        });
+                        res.send(data);
+                    });
                 })
             }
         }//end else if
@@ -109,10 +109,13 @@ module.exports=function(app){
             //去重查询
             Classes.distinct('gradeId',{dlt:0},function(err,classes){
                 if(err) throw err;
-
-                query.classes=classes;
-                query.faculty=data;
-                res.render('admin/test/addTest',query);
+                classRoom.distinct('building',{dlt:0},function(err,classroom){
+                    query.classes=classes;
+                    query.faculty=data;
+                    query.building=classroom
+                    res.render('admin/test/addTest',query);
+                })
+                
             })
         })
     });

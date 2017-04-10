@@ -47,14 +47,14 @@ input[type="text"]{
 
 <tr>
 	<td class="tdwidth">学号：</td>
-	<td ><input id="showstudentId" type="text" name="studentId" value="<%=studentInfo[0].studentId%>" readonly /></td>
+	<td ><input id="showstudentId" type="text" name="studentId" value="<%=studentInfo.studentId%>" readonly /></td>
 	<td class="tdwidth">身份证号：</td>
-	<td><input type="text" name="IdCard" value="<%=studentInfo[0].IdCard%>"/></td>
+	<td><input type="text" name="IdCard" value="<%=studentInfo.IdCard%>"/></td>
 	<td class="tdwidth">电话号码：</td>
-	<td><input type="text" name="phoneNo" value="<%=studentInfo[0].phoneNo%>"/></td>
-	<%if(studentInfo[0].studentPhoto){%>
+	<td><input type="text" name="phoneNo" value="<%=studentInfo.phoneNo%>"/></td>
+	<%if(studentInfo.studentPhoto){%>
 	<td rowspan="5"  style="width:180px;" align="center" valign="middle" text-align="center">
-		<img src="../../uploadimages/students/<%=studentInfo[0].studentPhoto%>"  class="imgs" >
+		<img src="../../uploadimages/students/<%=studentInfo.studentPhoto%>"  class="imgs" >
 		请选择照片
 	</td>
 	<%}else{%>
@@ -65,17 +65,17 @@ input[type="text"]{
 
 <tr>
 	<td>姓名：</td>
-	<td><input type="text" name="name" value="<%=studentInfo[0].name%>"/></td>
+	<td><input type="text" name="name" value="<%=studentInfo.name%>"/></td>
 	<td>曾用名：</td>
-	<td><input type="text" name="usedname" value="<%=studentInfo[0].usedname%>"/></td>
+	<td><input type="text" name="usedname" value="<%=studentInfo.usedname%>"/></td>
 	<td>性别</td>
 	<td>
-		<% if(studentInfo[0].gender=='女'){%>
+		<% if(studentInfo.gender=='女'){%>
 		<input type="radio" name="gender" value="男"/>男
 		<input type="radio" name="gender" value="女" checked="checked" />女
 		 <%}%>
 
-		<% if(studentInfo[0].gender=='男'){%>
+		<% if(studentInfo.gender=='男'){%>
 		<input type="radio" name="gender" value="男" checked="checked" />男
 		<input type="radio" name="gender" value="女"/>女
 		 <%}%>
@@ -90,58 +90,56 @@ input[type="text"]{
 		<select id="day" style="width:24%;"></select>
 	</td>
 	<td>来源高中：</td>
-	<td><input type="text" name="originSchool" value="<%=studentInfo[0].originSchool%>"/></td>
+	<td><input type="text" name="originSchool" value="<%=studentInfo.originSchool%>"/></td>
 	<td>政治面貌：</td>
-	<td><input type="text" name="politicalLandscape" value="<%=studentInfo[0].politicalLandscape%>"/></td>
+	<td><input type="text" name="politicalLandscape" value="<%=studentInfo.politicalLandscape%>"/></td>
 </tr>
 
 <tr >
 	<td >父亲：</td>
-	<td ><input type="text" name="familyName" value="<%=studentInfo[0].fatherName%>"/></td>
+	<td ><input type="text" name="familyName" value="<%=studentInfo.fatherName%>"/></td>
 	<td>父亲电话：</td>
-	<td><input type="text" name="familyPhone" value="<%=studentInfo[0].fatherPhone%>"/></td>
+	<td><input type="text" name="familyPhone" value="<%=studentInfo.fatherPhone%>"/></td>
 	<td>家庭住址：</td>
-	<td><input type="text" name="familyAddress" value="<%=studentInfo[0].familyAddress%>"/></td>
+	<td><input type="text" name="familyAddress" value="<%=studentInfo.familyAddress%>"/></td>
 </tr>
 <tr>
 	<td >母亲：</td>
-	<td ><input type="text" name="familyName" value="<%=studentInfo[0].motherName%>"/></td>
+	<td ><input type="text" name="familyName" value="<%=studentInfo.motherName%>"/></td>
 	<td>母亲电话：</td>
-	<td><input type="text" name="familyPhone" value="<%=studentInfo[0].motherPhone%>"/></td>
+	<td><input type="text" name="familyPhone" value="<%=studentInfo.motherPhone%>"/></td>
 	<td >家庭邮编：</td>
-	<td ><input type="text" name="postCode" value="<%=studentInfo[0].postCode%>"/></td>
+	<td ><input type="text" name="postCode" value="<%=studentInfo.postCode%>"/></td>
 </tr>
-<tr >
+<tr>
 	<td >所属学院：</td>
-	<td ><input type="text" name="faculty" value="<%=studentInfo[0].faculty%>"/></td>
-	<td >所属系别：</td>
-	<td ><input type="text" name="department" value="<%=studentInfo[0].department%>"/></td>
+	<td ><input type="text" name="faculty" value="<%=studentInfo.faculty%>"/></td>
 	<td>所修专业：</td>
-	<td><input type="text" name="major" value="<%=studentInfo[0].major%>"/></td>
+	<td><input type="text" name="major" value="<%=studentInfo.major%>"/></td>
+	<td>所属年级：</td>
+	<td><input type="text" name="gradeId" value="<%=studentInfo.gradeId%>"/></td>
 		<!--上传图片按钮-->
 	<td><input type="file" name="studentphoto" multiple="multiple" /></td>
 </tr>
 
 <tr >
-	<td>所属年级：</td>
-	<td><input type="text" name="gradeId" value="<%=studentInfo[0].gradeId%>"/></td>
+	
 	<td>所属班级：</td>
-	<td><input type="text" name="classId" value="<%=studentInfo[0].classId%>"/></td>
+	<td><input type="text" name="classId" value="<%=studentInfo.classId%>"/></td>
+	<td>学制：</td>
+	<td><input type="text" name="studyYear" value="<%=studentInfo.studyYear%>"/></td>
 	<td>考生号：</td>
-	<td><input type="text" name="IdcandidateNoCard" value="<%=studentInfo[0].candidateNo%>"/></td>
-
-
+	<td><input type="text" name="IdcandidateNoCard" value="<%=studentInfo.candidateNo%>"/></td>
 </tr>
 </tr>
 
 <tr >
 
-	<td>学制：</td>
-	<td><input type="text" name="studyYear" value="<%=studentInfo[0].studyYear%>"/></td>
+	
 	<td>准考证号：</td>
-	<td><input type="text" name="ticketNo" value="<%=studentInfo[0].ticketNo%>"/></td>
+	<td><input type="text" name="ticketNo" value="<%=studentInfo.ticketNo%>"/></td>
 	<td>学历层次：</td>
-	<td><input type="text" name="education" value="<%=studentInfo[0].education%>"/></td>
+	<td><input type="text" name="education" value="<%=studentInfo.education%>"/></td>
 </tr>
 </table>
 
@@ -151,7 +149,7 @@ input[type="text"]{
 </form>
 </div>
 
-<input type="hidden" id="getBirthday" value="<%=studentInfo[0].birthday%>">
+<input type="hidden" id="getBirthday" value="<%=studentInfo.birthday%>">
 
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
@@ -159,7 +157,31 @@ input[type="text"]{
 <script type="text/javascript" src="/javascripts/web/date.js"></script>
 <script type="text/javascript">
 
-addBirthday();
+$(function(){
+
+	addBirthday();
+
+	$("#year").change(function(){
+		 selectChange();
+	});
+	$("#month").change(function(){
+		 selectChange();
+	});
+	// before submit
+	$("form").submit(function(){
+		var year=$("#year").val();
+		var month=$("#month").val();
+		var day=$("#day").val();
+		var html='<input type="hidden" name="birthday" value='+year+'-'+month+'-'+day+'> ';
+		$("#selectBir").append(html);
+	});
+
+	$("#back").click(function(){
+		var studentId=$("input[name='studentId']").val();
+		location.href="/admin_student/showStudentDetail/"+studentId;
+	});
+})
+
 function addBirthday(){
 	var getBirthday=$("#getBirthday").val();
 	var arr=new Array();
@@ -203,28 +225,6 @@ function selectChange(){
  console.log(year+','+month+','+day);
  setDays(year,month,day);
 }
-
-$(function(){
-	$("#year").change(function(){
-		 selectChange();
-	});
-	$("#month").change(function(){
-		 selectChange();
-	});
-	// before submit
-	$("form").submit(function(){
-		var year=$("#year").val();
-		var month=$("#month").val();
-		var day=$("#day").val();
-		var html='<input type="hidden" name="birthday" value='+year+'-'+month+'-'+day+'> ';
-		$("#selectBir").append(html);
-	});
-
-	$("#back").click(function(){
-		var studentId=$("input[name='studentId']").val();
-		location.href="/admin_student/showStudentDetail/"+studentId;
-	});
-})
 
 
 </script>

@@ -28,7 +28,7 @@ const StudentInfoShema=new mongoose.Schema({
 	
 	candidateNo:String,//考生号
 	studyYear:String,//学制
-	studentPhoto:String,//存储照片的地址
+	studentPhoto:String,//存储照片的名字
 
 	e_mail:String,//邮箱
 	national:String,//民族

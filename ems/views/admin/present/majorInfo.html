@@ -71,7 +71,36 @@
 				</ul>
 			</div>
 		</div>
-<input type="hidden" id="facultyname" value="<%=facultyname%>">
+
+<input type="hidden" id="facultyId" value="<%=faculty._id%>">
+
+<div class="modal fade" id="newMajorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form  class="form-horizontal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">请输入专业的名称</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">专业名称:</label>
+					<div class="col-xs-8">
+						<input class="form-control" id="newMajorName" type="text">
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="saveChanges">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 </body>
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
@@ -87,9 +116,28 @@
 		})
 
 		$("#newMajor").click(function(){
-			var facultyname=$('#facultyname').val();
-			location.href="/admin_present/addMajor/"+facultyname;
+			$("#newMajorModal").modal("show");
 		});
+		$("#saveChanges").click(function(){
+			var facultyId=$("#facultyId").val();
+			var majorName=$("#newMajorName").val();
+			$.ajax({
+				data:{facultyId:facultyId,majorName:majorName},
+				type:'post',
+				dataType:'json',
+				url:'/admin_present/doAddMajor',
+				success:function(data){
+					var msg=data.msg;
+					if(msg=='error'){
+						parent.layer.msg("添加失败~")
+					}else{
+						parent.layer.msg("添加成功~")
+						location.reload();
+					}
+				}
+			})
+		})
+
 
 		//每页显示多少条数据
 		$("#numsize").change(function(){
@@ -133,8 +181,7 @@
 							for (var i = 0; i < list.length; i++) {
 								html += '<tr>' + 
 								'<td>' + list[i]._id + '</td>' +
-								'<td>' + list[i].majorName + '</td>' +
-								'<td>' + list[i].facultyName + '</td>' +
+								'<td>' + list[i].majorName + '</td><td><%=faculty.facultyName%></td>' +
 								'<td class="col-md-2 col-xs-3">'+
 								'<a href="javascript:;"  data-id="'+list[i]._id+'" class="deleteMajor">删除</a>'+
 								'</tr>';

@@ -1,6 +1,5 @@
 const mongoose=require('mongoose');
 const Faculty=require('../../modules/faculty');
-const Department=require('../../modules/department');
 const Major=require('../../modules/major');
 const crypto=require('crypto');
 const Present=require('../../modules/present');
@@ -41,32 +40,18 @@ module.exports=function(app){
         })
     });
 
-    //进入增加院系信息页面
-    app.get('/admin_present/addFaculty',function(req,res){
-        res.render('admin/present/addFaculty')
-    });
-
     //增加学院信息
     app.post('/admin_present/doAddFaculty',function(req,res){
-        const type=req.body.type;
         const name=req.body.facultyName;
-        //判断type类型，并添加到数据库
-        if(type==''){
-            res.send({'msg':'error'});
-        }
-        var  query={
-               facultyName:name,
-               type:type
-        } 
         //添加前的重复校验
         Faculty.count({facultyName:name},function(err,data){
             if(data==0){
-                  Faculty.create(query,function(err,data){
+                  Faculty.create({facultyName:name},function(err,data){
                        if(err) throw err;
-                       res.render('admin/present/facultyInfo',{msg:'添加成功'});
+                       res.send({msg:'success'});
                     });
                 }else{
-                    res.send('学院名称重复');
+                    res.send({msg:'error'});
                 }
             });//end faculty count
     });//end 
@@ -95,10 +80,8 @@ module.exports=function(app){
     //删除学院,异步操作
     app.post('/admin_present/deleteFaculty',function(req,res){
         const id=req.body.id;
-        const type=req.body.type;
         const query={
-                facultyName:id,
-                type:type,
+                _id:id,
                 dlt:0
             }
         //删除并更新时间
@@ -117,11 +100,12 @@ module.exports=function(app){
     });//end delete
 
     //进入专业界面
-    app.get('/admin_present/queryMajor/:name',function(req,res){
-        const name=req.params.name;
-        res.render('admin/present/majorInfo',{
-            facultyname:name
+    app.get('/admin_present/queryMajor/:id',function(req,res){
+        const id=req.params.id;
+        Faculty.findOne({_id:id,dlt:0},function(err,data){
+            res.render('admin/present/majorInfo',{faculty:data})
         })
+        
     });
 
     //查看专业信息,异步传输
@@ -144,33 +128,23 @@ module.exports=function(app){
                 facultyName:facultyName
 		    }
 		}//end if
-	PageInfo.getPages(req,query, Major,function(err,data){
+	    PageInfo.getPages(req,query, Major,function(err,data){
             res.send(data);
         });
 
     });
 
-    //进入添加专业页面
-    app.get('/admin_present/addMajor/:facultyname',function(req,res){
-        const facultyname=req.params.facultyname;
-        Faculty.find(function(err,data){
-            console.log(data);
-            res.render('admin/present/addMajor',{
-                facultyname:facultyname
-            });
-        });//end find  
-    });
     /**
      * 添加专业信息
      */
     app.post('/admin_present/doAddMajor',function(req,res){
         const query=utils.getAllPostForm(req);
         if(query.majorName==''){
-            res.render('admin/present/addMajor',{msg:'Name不能为空'});
+            res.send({msg:'error'});
         }
         Major.create(query,function(err,data){
             if(err) throw err;
-            res.render('admin/present/majorInfo',{msg:'添加成功',facultyname:query.facultyName})
+            res.send({msg:'success'})
         });
     });
 
