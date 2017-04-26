@@ -36,7 +36,7 @@ module.exports=function(app){
 	//添加学生详细信息
 	app.post('/admin_student/doAddStudent',function(req,res){
 		var photoname=req.files.studentphoto.name;
-
+		var query=utils.getAllPostForm(req);
 		if(photoname!=''){
 			var newPath;
 			var filename;
@@ -69,7 +69,7 @@ module.exports=function(app){
 			fs.renameSync(path,newPath);//重命名
 			query.studentPhoto=filename;
 		}
-		var query=utils.getAllPostForm(req);
+		
 		StudentInfo.create(query,function(err,data){
 			if(err) throw err;
 			 res.redirect('/admin_student/showStudentDetail/'+req.body.studentId);

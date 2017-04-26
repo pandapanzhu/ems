@@ -90,12 +90,7 @@ module.exports=function(app){
 			query.teacherName=req.body.teacherName
 			ClassInfo.create(query,function(err,data){
 				if(err)throw err;
-				if(data.length>0){
-					res.render('admin/class/classInfo',{msg:'添加班级成功'});
-				}
-				else{
-					res.render('admin/class/classInfo',{msg:'添加班级失败'});
-				}
+					res.redirect('/admin_class/getClass');
 			})
 		})//end count
 	});
