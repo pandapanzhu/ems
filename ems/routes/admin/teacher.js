@@ -106,7 +106,7 @@ app.get('/admin_teacher/showTeacherDetail/:id',function(req,res){
 		if(err) throw err;
 		res.render("admin/teacher/showTeacherDetail",{
 			teacherInfo:data,
-			message:''
+			"message":''
 		});
 	});
 });
@@ -176,7 +176,7 @@ app.post('/admin_teacher/doModifyTeacherInfo',function(req,res){
 		TeacherInfo.findOne(query,function(err,data){
 			res.render("admin/teacher/showTeacherDetail",{
 				teacherInfo:data,
-				message:'修改成功'
+				"message":'修改成功'
 			})
 		})
 	})
@@ -184,18 +184,33 @@ app.post('/admin_teacher/doModifyTeacherInfo',function(req,res){
 
 //删除教师信息-->软删除
 app.get('/admin_teacher/deleteTeacherInfo/:id',function(req,res){
-	const teacherId=req.params.id;
+	//先删除教师的登录信息
+	const teacherId=req.params.id;//为Object_id
 	const query={
-		teacherId:teacherId,
+		_id:teacherId,
 		dlt:0
 	}
 	const updates={
 		dlt:1,
 		updateAt:new Date()
 	}
-	TeacherInfo.update(query,{$set:updates},function(err,data){
+	TeacherInfo.findOne(query,function(err,teacherinfos){
 		if (err) throw err;
-		res.redirect('/admin_teacher/getTeacher');
+		if(data){//如果有值
+// 			//先删除登录信息
+			var teacherId=teacherinfos.teacherId;
+			Teacher.update({username:teacherId,dlt:0},{$set:updates},function(err,Myteacher){
+				if(err) throw err;
+				if(Myteacher.nModified>0){//删除登录信息成功，再删除详细信息。
+					TeacherInfo.update(query,{$set:updates},function(err,infos){
+						if(err) throw err;
+						if(infos.nModified>0){//删除详细信息成功
+							res.redirect('/admin_teacher/getTeacher');
+						}
+					})
+				}
+			})
+		}
 	})
 });
 

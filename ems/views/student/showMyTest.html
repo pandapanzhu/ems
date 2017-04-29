@@ -65,21 +65,23 @@
     })
 
     function getYears(){
-        $.ajax({
-            async:false,
-            type:'post',
-            dataType:'json',
-            url:'/student_person/getMyYears',
-            success:function(data){
-                if(data!=null){
-                    var year=data.grade;
-                    var html='<div><select class="form-control" id="getYears"><option>'+(year++)+'</option>'
-                    +'<option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option><option>'+(year++)+'</option>'
+		var date=new Date();
+		var year=date.getFullYear();
+        // $.ajax({
+        //     async:false,
+        //     type:'post',
+        //     dataType:'json',
+        //     url:'/student_person/getMyYears',
+        //     success:function(data){
+        //         if(data!=null){
+        //             var year=data.grade;
+                    var html='<div><select class="form-control" id="getYears"><option>'+(year--)+'</option>'
+                    +'<option>'+(year--)+'</option><option>'+(year--)+'</option><option>'+(year--)+'</option><option>'+(year--)+'</option>'
                     +'</select></div>'
                     $("#changeSelect").empty().append(html);
-                }
-            }
-        })
+                // }
+            // }
+        // })
         
 
     }

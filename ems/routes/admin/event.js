@@ -1,3 +1,4 @@
+const mongoose=require('mongoose');
 const EventInfo=require('../../modules/event');
 const utils=require('../util');
 const PageInfo=require('../page');
@@ -10,8 +11,8 @@ module.exports=function(app){
     });
     /**加载活动的信息，实现分页 */
     app.post('/admin_event/getEventInfo',function(req,res){
-        const name=req.body.name;
-        const type=req.body.type;
+        var name=req.body.name;
+        var type=req.body.type;
         //默认查询出所有的信息
 		var query={dlt:0}
 		//条件查询
@@ -83,9 +84,9 @@ module.exports=function(app){
     });
     /**查看学生，分页 */
     app.post('/admin_event/getStudentOfEventInfo',function(req,res){
-        const name=req.body.name;
-        const type=req.body.type;
-        const id=req.body.id;
+        var name=req.body.name;
+        var type=req.body.type;
+        var id=req.body.id;
         //默认查询出所有的信息
 		var query={dlt:0,eventId:id}
 		//条件查询

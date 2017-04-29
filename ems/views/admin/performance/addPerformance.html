@@ -129,6 +129,7 @@ $(function(){
                             html+='<option>'+data[i]+'</option>'
                         }
                         $("#classSelect").empty().append(html);
+						getClassStudent();
                     }
                     else{
                         parent.layer.msg('没有对应的班级！');
@@ -142,6 +143,11 @@ $(function(){
 	
 	//选择班级后，动态加载学生
 	$("#classSelect").change(function(){
+		getClassStudent();
+	});//end change
+
+	//加载学生信息的方法
+	function getClassStudent(){
 		var grade=$("#gradeId").val();
 		var major=$("#majorSelect").val();
 		var classid=$("#classSelect").val();
@@ -161,7 +167,7 @@ $(function(){
 				alert("学生信息加载失败！");
 			}
 		});//end ajax
-	});//end change
+	}
 
 	$("#back").click(function(){
 		location.href='/admin_performance/showPerformance';

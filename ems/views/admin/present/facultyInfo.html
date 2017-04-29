@@ -18,7 +18,7 @@
 	<div class="c_search clearfix">
 		<div>
 			<span>根据： </span>
-			<input id="selectType" value="facultyName">学院名称</input>
+			学院名称
 		</div>
 		<div id="enterInput">
 			<input type="text" id="condition" class="form-control">		
@@ -123,14 +123,14 @@
 		$("#numsize").change(function(){
 			var numsize=$("#numsize").val();
 			var condition=$("#condition").val();
-			var type=$("#selectType").val();
+			var type="facultyName";
 			QueryFaculty(1,numsize,type,condition);
 		});
 
 		//查询信息
 		$("#query_btn").click(function(){
 			var numsize=$("#numsize").val();
-			var type=$("#selectType").val();
+			var type="facultyName";
 			var condition=$("#condition").val();
 			QueryFaculty(1,numsize,type,condition);
 		});

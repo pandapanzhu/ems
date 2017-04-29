@@ -101,7 +101,6 @@
 		</div>
 	</div>
 </div>
-
 </body>
 <script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
 <script type="text/javascript" src="/layer/layer.js"></script>
@@ -160,12 +159,12 @@
 
 	//动态添加页面，并实现分页
 	function QueryMajor(pageNum, pageSize,condition) {
-        var facultyname=$('#facultyname').val();
+        var facultyId=$("#facultyId").val();
 		var sendData = {
 			name : condition,
 			pageNum : pageNum,
 			pageSize : pageSize,
-            facultyname:facultyname
+            facultyId:facultyId
 		}
 		$.ajax({
 					type : "post",

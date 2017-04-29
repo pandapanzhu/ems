@@ -1,4 +1,3 @@
-const mongoose=require('mongoose');
 const Faculty=require('../../modules/faculty');
 const Major=require('../../modules/major');
 const crypto=require('crypto');
@@ -112,11 +111,11 @@ module.exports=function(app){
     app.post('/admin_present/doGetMajorInfo',function(req,res){
         //查询条件
 		var name=req.body.name;
-        const facultyName=req.body.facultyname;
+        const facultyId=req.body.facultyId;
 
 		var query={
             dlt:0,
-            facultyName:facultyName
+            facultyId:facultyId
         }
 		//条件查询
 		if(name!=''){
@@ -228,7 +227,6 @@ module.exports=function(app){
     //删除教室信息
     app.post("/admin_present/deleteClassRoom",function(req,res){
         var id=req.body.id;
-        //var _id=mongoose.Types.ObjectId(id);//将传过来的id,转换为ObjectId类型
          const query={
                _id:id
             }
