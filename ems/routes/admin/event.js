@@ -4,6 +4,7 @@ const utils=require('../util');
 const PageInfo=require('../page');
 const Registration=require('../../modules/registration');
 const StudentInfo=require('../../modules/studentInfo');
+const FacultyInfo=require('../../modules/faculty');
 module.exports=function(app){
     /** 进入活动管理页面*/
     app.get('/admin_event/getEvent',function(req,res){
@@ -113,7 +114,12 @@ module.exports=function(app){
             if(!data){
                 res.send({'msg':'error'});
             }else{
-                res.send({list:data,'msg':'success'});
+                //因为学生查询出来的信息中，学院是学院id，所以这儿可以再根据学院的id，找到学院的名字。
+                FacultyInfo.findOne({_id:data.faculty,dlt:0},function(err,result){
+                    if(err) throw err;
+                     res.send({list:data,myfaculty:result,'msg':'success'});
+                })
+               
             }
         })
     })
