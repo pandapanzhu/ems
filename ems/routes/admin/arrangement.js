@@ -41,11 +41,23 @@ module.exports=function(app){
                 time[i][j]=[i+1,j+1];
             }
         }
-        var query=utils.getAllPostForm(req);//表单处理
+        var query={}
+        //封装从前台传过来的信息
+        var getData=req.body.data;
+       var StringArray=getData.split("&");
+       for(var i in StringArray){//循环第一次，将data中的信息拿出来
+           var ArrayBy=StringArray[i].split("=");
+           var name=ArrayBy[0],value=ArrayBy[1]
+           query[name]=value;
+       }
+
+        query.courseId=req.body.sendData.course,
+        query.teacherId=req.body.sendData.teacher
+        
         //装载排课信息
         var arrangements={
             years:query.years,
-            term:query.term,
+            term:query.term
         }
         //查询班级信息
         var classes={}
@@ -59,60 +71,38 @@ module.exports=function(app){
                 res.send({'msg':'error'});//没有找到对应的班级
             }else{//查询出班级之后，将班级id装载到arrangements，然后再根据课程数量来分配教室。
                 arrangements.classId=classs._id;
-                    
-                //根据课程的数量来循环====待完善
-                var course=query.course.split(","),teacher=query.teacher.split(",");
-                var ep=new eventproxy();
-                ep.after('eventSuccess',course.length,function(data){
-                    var msg='success',j=0;
-                    for(var i in data){
-                        if(data[i]==msg){
-                            j++;
-                        }
-                    }
-                    if(j==data.length){
-                        res.send({'msg':'success'});
-                    }
-                });
-                ep.after("eventError",1,function(data){
-                    res.send({'msg':'error'})
-                });
-                
-                course.forEach(function(item,i){
-                    arrangements.courseId=course[i];
-                    
-                    //去重处理
-                    Arrangement.findOne(arrangements,function(err,data){
-                        if(err) throw err;
-                        if(data){//证明数据库已经存在本条数据
-                        ep.emit('eventError','error');//抛出异常
-                        }else{
-                            //添加教师信息
-                            arrangements.teacherId=teacher[i];
-                            //调用函数解决时间问题，时间用周一到周五每天5节课的二维数组
-                            utils.RecursionForArrangeTime(arrangements,time,function(err,arrangeTime){
-                                ClassRoom.find({building:query.building,dlt:0},function(err,classroom){
-                                    if(err) throw err;
-                                    //解决教室问题==找到教室后，随机其一个数，然后在arrangement中查询，如果存在就递归，如果不存在就选择是它了
-                                    utils.RecursionForArrangeRoom(arrangeTime,classroom,function(err,arrangeRoom){
-                                        //arrangeRoom中已经选中教室了。
-                                        Arrangement.create(arrangeRoom,function(err,add){
-                                            if(err) throw err;
-                                                ep.emit('eventSuccess','success');
-                                            if(add.length==0){
-                                                ep.emit('eventError','error');
-                                            }
-                                        })//end create
-                            })//end utilForRoom
-                        })//end find
-                })//end utilForTime
-                        }
-                })
-                })//ed forEach
-
-            }
-        })
-    })
+                //然后再将course等信息装入arrangements进行查重处理
+                arrangements.courseId=query.courseId;
+                //去重处理
+                Arrangement.findOne(arrangements,function(err,data){
+                    if(err) throw err;
+                    if(data){//证明数据库已经存在本条数据，插入了重复的课程
+                        res.send({'msg':'error'});
+                    }else{//没有重复的话
+                        //添加教师信息
+                        arrangements.teacherId=query.teacherId;
+                        //调用函数解决时间问题，时间用周一到周五每天5节课的二维数组
+                        utils.RecursionForArrangeTime(arrangements,time,function(err,arrangeTime){
+                            ClassRoom.find({building:query.building,dlt:0},function(err,classroom){
+                                if(err) throw err;
+                                //解决教室问题==找到教室后，随机其一个数，然后在arrangement中查询，如果存在就递归，如果不存在就选择是它了
+                                utils.RecursionForArrangeRoom(arrangeTime,classroom,function(err,arrangeRoom){
+                                    //arrangeRoom中已经选中教室了。
+                                    Arrangement.create(arrangeRoom,function(err,add){
+                                        if(err) throw err;
+                                        res.send({'msg':'success'})
+                                        if(add.length==0){
+                                            res.send({'msg':'error'});
+                                        }
+                                    })//end create
+                                })//end utilForRoom
+                            })//end find ClassRoom
+                        })//end utilForTime
+                    }//end else
+                })//end 去重
+            }//end else
+        })//end ClassInfo find
+    });//end function
 
 
     /**
