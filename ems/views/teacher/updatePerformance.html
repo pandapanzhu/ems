@@ -58,15 +58,20 @@
         <td><%=student[i].gradeId%>级<%=student[i].major%><%=student[i].classId%>班</td>
         <td>
             <%if(performance.length>0){
+                var confirm=false;
                 for(var j in performance){
                     if(performance[j].studentId==student[i]._id){%>
                         <!--id相同证明已经在数据库存在了-->
                         <%=performance[j].results%>
-                    <%}else{%>
-                    <input class="form-control update" type="text" data-id="<%=student[i]._id%>">
-                    <%}
-                }
-            }else{%>
+                        <%confirm=true;
+                        break;
+                    }
+                    }%>
+                    <%if(!confirm){%>
+                        <input class="form-control update" type="text" data-id="<%=student[i]._id%>" >
+                    <%}%>
+                    
+            <%}else{%>
                 <input class="form-control update" type="text" data-id="<%=student[i]._id%>" >
             <%}%>
             </td>

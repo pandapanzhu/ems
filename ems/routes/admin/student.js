@@ -156,13 +156,14 @@ app.get('/admin_student/modifyStudentInfo/:studentInfoid',function(req,res){
 		studentId:studentInfoid,
 		dlt:0
 	};
-	const studentInfo=StudentInfo.findOne(query,function(err,data){
+	StudentInfo.findOne(query,function(err,data){
 		if (err) throw err;
-		res.render('admin/student/modifyStudentInfo',{
-		title:'修改学生信息',
-		studentInfoid:studentInfoid,
-		studentInfo:data
-		});
+		Faculty.findOne({dlt:0,_id:data.faculty},function(err,faculty){
+			res.render('admin/student/modifyStudentInfo',{faculty:faculty,
+				studentInfoid:studentInfoid,
+				studentInfo:data
+			});
+		})
 	});
 });
 

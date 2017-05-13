@@ -52,7 +52,9 @@ app.set('view engine','html');
 app.use(session({
   secret:'myems',
   key:'ems',
-  cookie:{maxAge:1000*60*30}
+  cookie:{maxAge:1000*60*30},
+  resave:true,
+  saveUninitialized:true
 }));
 
 

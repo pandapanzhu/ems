@@ -17,7 +17,7 @@
 	color:#fff;
 }
 
-#showstudentId{
+input:read-only{
 	border: none;
 }
 input[type="file"]{
@@ -49,7 +49,7 @@ input[type="text"]{
 	<td class="tdwidth">学号：</td>
 	<td ><input id="showstudentId" type="text" name="studentId" value="<%=studentInfo.studentId%>" readonly /></td>
 	<td class="tdwidth">身份证号：</td>
-	<td><input type="text" name="IdCard" value="<%=studentInfo.IdCard%>"/></td>
+	<td><input type="text" name="IdCard" value="<%=studentInfo.IdCard%>" readonly /></td>
 	<td class="tdwidth">电话号码：</td>
 	<td><input type="text" name="phoneNo" value="<%=studentInfo.phoneNo%>"/></td>
 	<%if(studentInfo.studentPhoto){%>
@@ -113,11 +113,11 @@ input[type="text"]{
 </tr>
 <tr>
 	<td >所属学院：</td>
-	<td ><input type="text" name="faculty" value="<%=studentInfo.faculty%>"/></td>
+	<td ><input type="text" name="faculty" value="<%=faculty.facultyName%>" readonly/></td>
 	<td>所修专业：</td>
-	<td><input type="text" name="major" value="<%=studentInfo.major%>"/></td>
+	<td><input type="text" name="major" value="<%=studentInfo.major%>" readonly/></td>
 	<td>所属年级：</td>
-	<td><input type="text" name="gradeId" value="<%=studentInfo.gradeId%>"/></td>
+	<td><input type="text" name="gradeId" value="<%=studentInfo.gradeId%>" readonly/></td>
 		<!--上传图片按钮-->
 	<td><input type="file" name="studentphoto" multiple="multiple" /></td>
 </tr>
@@ -125,7 +125,7 @@ input[type="text"]{
 <tr >
 	
 	<td>所属班级：</td>
-	<td><input type="text" name="classId" value="<%=studentInfo.classId%>"/></td>
+	<td><input type="text" name="classId" value="<%=studentInfo.classId%>" readonly/></td>
 	<td>学制：</td>
 	<td><input type="text" name="studyYear" value="<%=studentInfo.studyYear%>"/></td>
 	<td>考生号：</td>

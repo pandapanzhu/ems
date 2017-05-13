@@ -1,7 +1,5 @@
 //node.js自带的md5加密技术
 var crypto=require('crypto');
-//设置上传插件
-var formidable=require('formidable');
 var fs=require('fs');
 var ArrangeMent=require('../modules/arrangement');
 
@@ -29,46 +27,7 @@ module.exports.getAllPostForm=function (req){
 
 };
 
-module.exports.setFormidable=function(req,res,next){
-	//创建表单
-	var form=new formidable.IncomingForm();
-	//设置编辑
-	form.encoding='utf-8';
-	//保存文件的路径
-	form.uploadDir='/uploads/images/';
-	//是否保留后缀
-	form.keepExtensions=true;
-	//设置单个上传文件的大小
-	form.maxFieldsSize=2*1024*1024	//2M
 
-	form.parse(req,function(err,fields,files){
-
-		if (err) throw err;
-		//设置后缀名
-		var extName = '';  //后缀名
-        switch (files.studentphoto.type) {
-            case 'image/pjpeg':
-                extName = 'jpg';
-                break;
-            case 'image/jpeg':
-                extName = 'jpg';
-                break;         
-            case 'image/png':
-                extName = 'png';
-                break;
-            case 'image/x-png':
-                extName = 'png';
-                break;         
-        }
-		var studentid=req.body.studentId;
-	var filename=studentid+'.'+extName;
-	var newPath=form.uploadDir+filename;
-	fs.renameSync(files.studentphoto.path,newPath);//
-
-	});
-	next();
-
-}
 /**
  * ===================排课部分=====================
  */
@@ -76,14 +35,14 @@ module.exports.setFormidable=function(req,res,next){
 /**
  * 解决教室的问题
  */
-module.exports.RecursionForArrangeRoom=function(query,classroom,callback){
+module.exports.RecursionForArrangeRoom=function myroom(query,classroom,callback){
 	var i=Math.floor(Math.random()*classroom.length);//取一个随机数,因为0的关系，所以需要向下取整
-	query.classRoomId=classroom[i]._id
+	query.classRoomId=classroom[i]._id;
 	ArrangeMent.findOne(query,function(err,data){
 		if(data){
-			RecursionForArrangement(query);
+			myroom(query,classroom,callback);
 		}else{
-			callback("选择教室时失败",query);//返回一个query
+			callback("选择教室时成功",query);//返回一个query
 		}
 	})
 }
@@ -91,16 +50,26 @@ module.exports.RecursionForArrangeRoom=function(query,classroom,callback){
 /**
  * 排课中，解决时间的问题
  */
-module.exports.RecursionForArrangeTime=function(query,time,callback){
-	var i=Math.floor(Math.random()*4);//取一个随机数,因为0的关系，所以需要向下取整
-	var j=Math.floor(Math.random()*4);//取一个随机数,因为0的关系，所以需要向下取整
+module.exports.RecursionForArrangeTime=function mytime(query,time,callback){
+	var i=Math.floor(Math.random()*5);//取一个随机数,因为0的关系，所以需要向下取整
+	var j=Math.floor(Math.random()*5);//取一个随机数,因为0的关系，所以需要向下取整
 	var times=time[i][j];
 	query.times=times;
 	ArrangeMent.findOne(query,function(err,data){
 		if(data){
-			RecursionForArrangeTime(query);
+			mytime(query,time,callback);
 		}else{
-			callback("选择教室时失败",query);//返回一个query
+			callback("选择时间成功",query);//返回一个query
+		}
+	})
+}
+
+module.exports.checkTeacherAndTime=function myTeacherTime(query,callback){
+	ArrangeMent.findOne(query,function(err,data){
+		if(data){
+			mytime(query,time,callback);
+		}else{
+			callback("选择时间成功",query);//返回一个query
 		}
 	})
 }

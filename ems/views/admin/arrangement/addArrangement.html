@@ -43,9 +43,9 @@
             </div>
             <div class="col-md-11" style="margin-left: 6%;">
                 <%for(var i in course){%>
-                    <div class="col-md-4" style="height: 34px;">
+                    <div class="col-md-5" style="height: 34px;">
                         <div class="col-md-7" style="margin-right: -30px;">
-                            <input type="checkbox" class="mycourse" value="<%=course[i]._id%>" style="margin-top: 0px;"><%=course[i].courseName%>
+                            <input type="checkbox" class="mycourse" value="<%=course[i]._id%>" style="margin-top: 0px;"data-id="<%=course[i].frequency%>"><%=course[i].courseName%>
                         </div>
                         <div class="col-md-5" class="showTeachers">
                         
@@ -120,31 +120,36 @@ $(function(){
             data = decodeURIComponent(data,true); //将数据解码
             //遍历课程信息，一门课一门课的向后台添加
             var sendData={}
-            var i=0,j=0;//i代表循环的次数,j代表插入成功的次数
+            var i=0,j=0,frequency=1;//i代表循环的次数,j代表插入成功的次数,frequency代表这门课的周次数
             $(".mycourse").each(function(){
                  if($(this).prop("checked")){//如果被选中
-                    i++;//循环次数+1
+                    var frequency=$(this).data("id");
                     sendData.course=$(this).val();
                     sendData.teacher=$(this).parent().next().find(".myteacher").val()
+                    for(var z=0;z<frequency;z++){
+                    i++;//循环次数+1
+                    }//end for
                  }//end if
-                $.ajax({
-                    async:false,
-                    data:{data,sendData},
-                    type:'post',
-                    dataType:'json',
-                    url:'/admin_arrangement/addArrangement',
-                    success:function(data){
-                        var msg=data.msg;
-                        if(msg=='success'){
-                            j++;
-                        }else{
-                            parent.layer.alert("添加排课失败，请检查字段信息~");
-                            return false;
+                for(var z=0;z<frequency;z++){
+                    $.ajax({
+                        async:false,
+                        data:{data,sendData},
+                        type:'post',
+                        dataType:'json',
+                        url:'/admin_arrangement/addArrangement',
+                        success:function(data){
+                            var msg=data.msg;
+                            if(msg=='success'){
+                                j++;
+                            }else{
+                                parent.layer.alert("添加排课失败，请检查字段信息~");
+                                return false;
+                            }
+                        },error:function(){
+                            parent.layer.msg("系统错误，请联系管理员！");
                         }
-                    },error:function(){
-                        parent.layer.msg("系统错误，请联系管理员！");
-                    }
-                });//end ajax
+                    });//end ajax
+                }//end for 
             })//end each
             if(i==j){//如果循环次数与成功次数相等
                 parent.layer.confirm("排课成功！,要去排课页面查看本班级的排课信息吗？",{

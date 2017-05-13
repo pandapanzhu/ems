@@ -109,9 +109,20 @@ app.post('/teacher_control/doShowMyStudent',function(req,res){
         years:years,
         dlt:0
     }
+    var myArray=[];
     Arrangement.find(query,function(err,data){
         if(err) throw err;
         if(data.length>0){
+            //因为一门课可能有多个周次，所以录入成绩时，需要根据课程和班级去去重
+            for(var  i in data){
+                for(var j=i;j<data.length;j++){
+                    if(data[i].classId==data[j].classId && data[i].courseId==data[j].courseId){
+                        //如果重复了
+                        data.splice(j,1);
+                        continue;
+                    }
+                }
+            }
             res.send({list:data,'msg':'success'});
         }else{
             res.send({'msg':'error'});

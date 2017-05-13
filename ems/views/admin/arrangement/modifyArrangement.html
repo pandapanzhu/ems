@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>排课信息管理</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap-theme.min.css">
+	<!-- 导入分页样式 -->
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/paging.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/web/base.css">
+	<style type="text/css">
+		body{background:#F8F8F8;}
+		.show{border:1px solid red;}
+		.title{background:#fff;margin-top:25px;height:54px;border:1px solid #E7EBEB;position:relative;}
+		.title .c_search{margin:10px 0 10px 25px;line-height:30px;width:600px;float:left;}
+		.c_search div{float:left;margin-left:3px;}
+		.c_search form-control{border-color:#EFEFEF;}
+		.c_search div select{width: 150px; height: 34px;}
+		.c_search .btn{background:#5AB4F5;cursor:pointer;font-weight:700;color:#fff;width:60px;}
+		.title .c_new{width:100px;height:30px;float:right;margin:10px 50px 10px 0px;}
+		.title .c_new .btn{background:#5AB4F5;font-weight:700;color:#fff;}
+		.mytable{text-align: center;}
+		/*th,td{text-align: center;}*/
+		/*修改BootStrap样式*/
+		.showStudentById{padding:2px 4px;}
+	</style>
+</head>
+<body>
+	
+	<div class="title w clearfix">
+	<div class="c_search clearfix">
+		<div>
+			<span>根据：教师</span>
+		</div>
+		
+		<div id="showChangeType">
+			<input type="text" class="form-control" id="condition">
+			</select>
+		</div>
+		<div>
+			<button class="btn" id="query_btn">搜索</button>
+		</div>
+	</div>
+</div>
+	
+
+	<table class="table table-hover span12" id="mytable">
+	<thead>
+		<tr>
+			<th>学年</th>
+			<th>学期</th>
+			<th>班级</th>
+			<th>课程</th>
+			<th>教师</th>
+			<th>教室</th>
+			<th>上课时间</th>
+			<th style="min-width:100px;">操作</th>
+		</tr>
+	</thead>
+	<tbody></tbody>
+	</table>
+
+		<div class="bottom">
+			<div class="selectbtn">
+				每页显示
+				<select name="numsize" id="numsize">
+					<option value="5">5</option>
+					<option value="8">8</option>
+					<option value="10">10</option>
+					</select>
+					条,共<label style="color: #85D9C8" id="total">0</label>	条
+			</div>
+			<div class="page ">
+				<ul id="pageul">
+					
+				</ul>
+			</div>
+		</div>
+<div class="modal fade" id="modifyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form  class="form-horizontal" id="ModifyForm">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="ture">&times;</span>
+					<span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">请修改信息</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">学年:</label>
+					<div class="col-xs-3">
+						<input type="text" id="myYears" class="form-control" readonly>
+					</div>
+					<label class="col-xs-2 leftLabel">学期:</label>
+					<div class="col-xs-3">
+						<input type="text" id="myTerm" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">班级信息:</label>
+					<div class="col-xs-8" >
+						<input type="text" id="myClass" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">课程信息:</label>
+					<div class="col-xs-8" >
+						<input type="text" id="myCourse" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">教师信息:</label>
+					<div class="col-xs-8" >
+						<input type="text" id="myTeacher" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">教室信息:</label>
+					<div class="col-xs-8">
+						<select id="myClassRoom" class="form-control">
+							<%for(var i in classroom){%>
+							<option value="<%=classroom[i]._id%>"><%=classroom[i].classroomName%></option>
+							<%}%>
+						</select>
+
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-3 leftLabel">上课时间:</label>
+					<div class="col-xs-8">
+						<span class="col-xs-1 leftLabel">周</span>
+						<div class="col-xs-3">
+							<select class="form-control" id="times1"><option>1</option><option>2</option><option>3</option>
+							<option>4</option><option>5</option></select>
+						</div>
+						<span class="col-xs-1 leftLabel">第</span>
+						
+						<div class="col-xs-3">
+							<select class="form-control" id="times0"><option>1</option><option>2</option><option>3</option>
+							<option>4</option><option>5</option></select>
+						</div>
+						<span class="col-xs-2 leftLabel">节课</span>
+						
+					</div>
+				</div>
+
+			</div>
+
+			<input type="hidden" id="hiddenId">
+			<input type="hidden" id="hiddenStatus">
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="saveChanges">保存</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="/bootstrap/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layer/layer.js"></script>
+<script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+	$(function(){
+		
+		//每页显示多少条数据
+		$("#numsize").change(function(){
+			var numsize=$("#numsize").val();
+			var condition=$("#condition").val();
+			QueryArrangement(1,numsize,condition);
+		});
+
+		//查询班级信息
+		$("#query_btn").click(function(){
+			var numsize=$("#numsize").val();
+			var condition=$("#condition").val();
+			QueryArrangement(1,numsize,condition);
+		});
+
+		//页面初始化
+		QueryArrangement(1,5,"","");
+
+	})
+	
+
+	//动态添加页面，并实现分页
+	function QueryArrangement(pageNum, pageSize,condition) {
+
+		var sendData = {
+			name : condition,
+			pageNum : pageNum,
+			pageSize : pageSize,
+		}
+		$.ajax({
+					type : "post",
+					data : sendData,
+					dataType : "json",
+					url : "/admin_arrangement/getArrangementInfo",
+					success : function(data) {
+						$("#total").html(data.total);
+						var html = "";
+						var list = data.list;
+						
+						if (list.length > 0) {
+							for (var i = 0; i < list.length; i++) {
+								html += '<tr><td>'+list[i].years+'</td><td>'+list[i].term+'</td>'
+								$.ajax({
+									data:{myId:list[i]._id},
+									async:false,
+									type:'post',
+									dataType:'json',
+									url:'/admin_arrangement/getArrangementNameById',
+									success:function(info){
+										html+='<td>'+info.classes+'</td>'
+										+'<td>'+info.course+'</td>'
+										+'<td>'+info.teacher+'</td>'
+										+'<td>'+info.classroom+'</td>'
+									}
+								})
+								var times=list[i].times
+								html+='<td>周'+times[1]+'第'+times[0]+'大节</td>'
+								html+='<td >'+
+								'<a href="javascript:;"  class="modifyArrangementById" data-id="'+list[i]._id+'" >修改</a>'+
+								'</tr>';
+							}//end for
+						} else {
+						layer.msg("没有搜索到您要查看的信息");
+						}
+						// 分页标签
+						if (list.length > 0) {
+							var html2 = "<li><button style='width:60px;text-align: center' id='prepage'>上一页</button>"
+									+ "</li><li id='firstPage'><button>1</button></li>";
+							
+							for (var i = 1; i < data.pages; i++) {
+								html2 += '<li id=btn' + (i + 1) + '><button>'
+										+ (i + 1) + '</button></li>';
+							}
+							
+							html2 += '<li><button style="width:60px;text-align: center" id="nextpage">下一页</button></li>';
+						}
+
+						$("#pageul").empty().append(html2);
+						$("#mytable tbody").empty().append(html);
+
+						//修改班级详细信息
+						$(".modifyArrangementById").click(function(){
+							var id=$(this).data("id");
+							$.ajax({
+								data:{myId:id},
+								type:'post',
+								dataType:'json',
+								url:'/admin_arrangement/getArrangementNameById',
+								success:function(data){
+									$("#myYears").val(data.years);
+									$("#myTerm").val(data.term);
+									$("#myClass").val(data.classes);
+									$("#myClass").attr("data-id",data.classId);
+									$("#myCourse").val(data.course);
+									$("#myTeacher").val(data.teacher);
+									$("#myTeacher").attr("data-id",data.teacherId);
+									var classRoomId=data.classRoomId;
+									$("#myClassRoom option").each(function(){
+										if(classRoomId==$(this).val()){
+											$(this).attr("selected",true);
+										}
+									});//end each
+
+									var times=data.times;
+									$("#times1 option").each(function(){
+										if(times[1]==$(this).val()){
+											$(this).attr("selected",true);
+										}
+									})
+									$("#times0 option").each(function(){
+										if(times[0]==$(this).val()){
+											$(this).attr("selected",true);
+										}
+									})//时间结束
+								}
+							})
+							$("#hiddenId").val(id);
+							$("#modifyModal").modal('show');
+						});
+						//教室改变了
+						$("#myClassRoom").change(function(){
+							getInfoFromModal();
+					
+						});//end change
+						$("#times0").change(function(){
+							getInfoFromModal();
+
+						});//end change
+						$("#times1").change(function(){
+							getInfoFromModal();
+
+						});//end change
+
+						//获取信息并发送到后台进行校验
+						function getInfoFromModal(){
+		
+							var sendData={
+								classId:$("#myClass").data("id"),
+								teacherid:$("#myTeacher").data("id"),
+								classroom:$("#myClassRoom").val(),
+								times0:$("#times0").val(),
+								times1:$("#times1").val(),
+								years:$("#myYears").val(),
+								term:$("#myTerm").val()
+							}
+							$.ajax({
+								async:false,
+								data:sendData,
+								type:'post',
+								dataType:'json',
+								url:'/admin_arrangement/CheckForArrangement',
+								success:function(data){
+									var msg= data.msg;
+									if(msg==1){
+									parent.layer.msg("不能选择当前教室或者时间哦，请更改教室或上课时间~")
+									$("#saveChanges").attr("disabled",true);
+									}else if(msg==2){
+										parent.layer.msg("教师与当前时间冲突了哦");
+										$("#saveChanges").attr("disabled",true);
+									}else if(msg==3){
+										parent.layer.msg("班级与当前时间冲突了哦");
+										$("#saveChanges").attr("disabled",true);
+									}else{
+										$("#saveChanges").attr("disabled",false);
+									}
+								}
+							});//end ajax
+						}//end function
+
+						$("#saveChanges").click(function(){
+							var sData={
+								id:$("#hiddenId").val(),
+								classroom:$("#myClassRoom").val(),
+								times0:$("#times0").val(),
+								times1:$("#times1").val(),
+							}
+
+							$.ajax({
+								data:sData,
+								type:'post',
+								dataType:'json',
+								url:'/admin_arrangement/doModifyArrangement',
+								success:function(data){
+									if(data.msg=='error'){
+										parent.layer.msg('修改信息失败~');
+									}else{
+										parent.layer.msg('修改信息成功~');
+										location.reload();
+									}
+								}
+							})
+						})
+				
+
+						//上一页
+						$("#prepage").off().click(function() {
+									if (data.isFirstPage == true) {
+
+									layer.msg("当前已是首页");
+									} else {
+										QueryArrangement(data.pageNum - 1,
+												data.pageSize, condition);
+									}
+								});
+
+						//下一页
+						$("#nextpage").off().click(function() {
+									if (data.isLastPage == true) {
+										layer.msg("当前已是尾页");
+									} else {
+										QueryArrangement(data.pageNum + 1,
+												data.pageSize, condition);
+									}
+								});
+						//第一页
+						$("#firstPage").off().click(function() {
+							if (data.isFirstPage == true) {
+								layer.msg("当前已是首页");
+							} else {
+								QueryArrangement(1, data.pageSize, condition);
+							}
+						});
+						//2,3,4..... 注意闭包问题
+						for (var i = 1; i < data.pages; i++) {
+							(function(arg) {
+								$("#btn" + (arg)).off().click(function() {
+									QueryArrangement(arg, data.pageSize, condition);
+								});
+							})(i + 1);
+						}
+
+					},//end success
+					error:function(){
+						alert("哪儿出错了呢！");
+					}
+				});//end ajax
+	}
+	
+
+
+
+</script>
+
+</html>
